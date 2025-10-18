@@ -1,0 +1,66 @@
+# Sensitive client data files
+*.xlsx
+*.xls
+*.pdf
+
+# Personal notes and workspace files
+human-notes.md
+workspace.md
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Node.js (for future backend/frontend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.env
+.env.local
+.env.production
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Build outputs
+dist/
+build/
+out/
+
+# Database
+*.db
+*.sqlite
+
+# Supabase local
+.supabase/
+
+# Generated data (optional - keep prototype data for now)
+# prototype_data/

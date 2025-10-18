@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Housing Dashboard - Manager Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .nav-link.active {
+            background-color: #1e40af;
+            color: white;
+        }
+        .stat-card {
+            transition: transform 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Header -->
+    <header class="bg-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold">Housing Dashboard</h1>
+                    <p class="text-blue-200 text-sm">Halfway Housing Management System</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm">Welcome, Manager</span>
+                    <button class="bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded text-sm">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md">
+        <div class="container mx-auto px-6">
+            <div class="flex space-x-1">
+                <a href="index.html" class="nav-link active px-6 py-3 text-sm font-medium">Dashboard</a>
+                <a href="properties.html" class="nav-link px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100">Properties</a>
+                <a href="tenants.html" class="nav-link px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100">Tenants</a>
+                <a href="intake-form.html" class="nav-link px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100">Intake Form</a>
+                <a href="reports.html" class="nav-link px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100">Reports</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Total Beds -->
+            <div class="stat-card bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-medium">Total Beds</p>
+                        <p class="text-3xl font-bold text-gray-800" id="total-beds">40</p>
+                    </div>
+                    <div class="bg-blue-100 p-3 rounded-full">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Occupied Beds -->
+            <div class="stat-card bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-medium">Occupied</p>
+                        <p class="text-3xl font-bold text-green-600" id="occupied-beds">24</p>
+                    </div>
+                    <div class="bg-green-100 p-3 rounded-full">
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Available Beds -->
+            <div class="stat-card bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-medium">Available</p>
+                        <p class="text-3xl font-bold text-blue-600" id="available-beds">16</p>
+                    </div>
+                    <div class="bg-blue-100 p-3 rounded-full">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Occupancy Rate -->
+            <div class="stat-card bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-medium">Occupancy Rate</p>
+                        <p class="text-3xl font-bold text-purple-600" id="occupancy-rate">60.0%</p>
+                    </div>
+                    <div class="bg-purple-100 p-3 rounded-full">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Properties Overview -->
+        <div class="bg-white rounded-lg shadow-md mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-xl font-bold text-gray-800">Properties Overview</h2>
+            </div>
+            <div class="p-6">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Property Address</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Beds</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Occupied</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Available</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Occupancy</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="properties-table" class="bg-white divide-y divide-gray-200">
+                            <!-- Data loaded by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity / Alerts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Upcoming Voucher Expirations -->
+            <div class="bg-white rounded-lg shadow-md">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-800">Voucher Expirations (Next 30 Days)</h2>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-3" id="expiring-vouchers">
+                        <!-- Loaded by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Available Beds -->
+            <div class="bg-white rounded-lg shadow-md">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-800">Available Beds</h2>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-3" id="available-beds-list">
+                        <!-- Loaded by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/data.js"></script>
+    <script>
+        // Load metrics
+        document.getElementById('total-beds').textContent = dashboardData.metrics.total_beds;
+        document.getElementById('occupied-beds').textContent = dashboardData.metrics.occupied_beds;
+        document.getElementById('available-beds').textContent = dashboardData.metrics.available_beds;
+        document.getElementById('occupancy-rate').textContent = dashboardData.metrics.occupancy_rate + '%';
+
+        // Load properties table
+        function loadPropertiesTable() {
+            const tbody = document.getElementById('properties-table');
+
+            dashboardData.houses.forEach(house => {
+                const houseBeds = dashboardData.beds.filter(b => b.house_id === house.house_id);
+                const occupied = houseBeds.filter(b => b.status === 'Occupied').length;
+                const available = houseBeds.filter(b => b.status === 'Available').length;
+                const occupancy = ((occupied / houseBeds.length) * 100).toFixed(1);
+
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${house.address}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${houseBeds.length}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${occupied}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-medium">${available}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${occupancy}%</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <a href="properties.html?id=${house.house_id}" class="text-blue-600 hover:text-blue-800">View Details</a>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Load expiring vouchers
+        function loadExpiringVouchers() {
+            const container = document.getElementById('expiring-vouchers');
+            const today = new Date();
+            const thirtyDaysFromNow = new Date(today.getTime() + (30 * 24 * 60 * 60 * 1000));
+
+            const expiringTenants = dashboardData.tenants.filter(t => {
+                if (!t.voucher_end || t.exit_date) return false;
+                const voucherEnd = new Date(t.voucher_end);
+                return voucherEnd >= today && voucherEnd <= thirtyDaysFromNow;
+            });
+
+            if (expiringTenants.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-sm">No vouchers expiring in the next 30 days.</p>';
+                return;
+            }
+
+            expiringTenants.forEach(tenant => {
+                const daysUntil = Math.ceil((new Date(tenant.voucher_end) - today) / (1000 * 60 * 60 * 24));
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between p-3 bg-yellow-50 rounded border border-yellow-200';
+                div.innerHTML = `
+                    <div>
+                        <p class="font-medium text-gray-900">${tenant.full_name}</p>
+                        <p class="text-sm text-gray-600">Voucher ends: ${tenant.voucher_end}</p>
+                    </div>
+                    <span class="text-sm font-medium ${daysUntil <= 7 ? 'text-red-600' : 'text-yellow-600'}">
+                        ${daysUntil} days
+                    </span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Load available beds
+        function loadAvailableBeds() {
+            const container = document.getElementById('available-beds-list');
+            const availableBeds = dashboardData.beds.filter(b => b.status === 'Available');
+
+            if (availableBeds.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-sm">No beds currently available.</p>';
+                return;
+            }
+
+            availableBeds.slice(0, 5).forEach(bed => {
+                const house = dashboardData.houses.find(h => h.house_id === bed.house_id);
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between p-3 bg-blue-50 rounded border border-blue-200';
+                div.innerHTML = `
+                    <div>
+                        <p class="font-medium text-gray-900">${bed.room_number}</p>
+                        <p class="text-sm text-gray-600">${house.address}</p>
+                    </div>
+                    <span class="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full font-medium">Available</span>
+                `;
+                container.appendChild(div);
+            });
+
+            if (availableBeds.length > 5) {
+                const more = document.createElement('p');
+                more.className = 'text-sm text-blue-600 font-medium mt-3';
+                more.innerHTML = `<a href="properties.html">+ ${availableBeds.length - 5} more available beds</a>`;
+                container.appendChild(more);
+            }
+        }
+
+        // Initialize dashboard
+        loadPropertiesTable();
+        loadExpiringVouchers();
+        loadAvailableBeds();
+    </script>
+</body>
+</html>

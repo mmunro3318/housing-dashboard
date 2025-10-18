@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tenant Intake Form - Housing Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Simple Header for Tenant View -->
+    <header class="bg-blue-600 text-white shadow-md">
+        <div class="container mx-auto px-4 py-6">
+            <h1 class="text-2xl font-bold">New Tenant Intake Form</h1>
+            <p class="text-blue-200 text-sm mt-1">Please complete all required fields</p>
+        </div>
+    </header>
+
+    <!-- Form Container -->
+    <main class="container mx-auto px-4 py-8 max-w-2xl">
+        <div class="bg-white rounded-lg shadow-md p-6 md:p-8">
+            <form id="intake-form">
+                <!-- Personal Information Section -->
+                <div class="mb-8">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 pb-2 border-b">Personal Information</h2>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Full Name <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="full_name" required
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="First Middle Last">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Date of Birth <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" name="dob" required
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Phone Number <span class="text-red-500">*</span>
+                            </label>
+                            <input type="tel" name="phone" required
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="(206) 555-1234">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Email (Optional)
+                            </label>
+                            <input type="email" name="email"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="your.email@example.com">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Housing Information Section -->
+                <div class="mb-8">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 pb-2 border-b">Housing Information</h2>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Expected Move-In Date <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" name="entry_date" required
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Preferred Property (if known)
+                            </label>
+                            <select name="preferred_house"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">No preference</option>
+                                <option value="house_1">1234 Pine Street</option>
+                                <option value="house_2">5678 Broadway Ave</option>
+                                <option value="house_3">910 Madison St</option>
+                                <option value="house_4">2345 Summit Ave</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Agency & Payment Information Section -->
+                <div class="mb-8">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 pb-2 border-b">Agency & Payment Information</h2>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                DOC Number <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="doc_number" required
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="DOC123456">
+                            <p class="text-xs text-gray-500 mt-1">Your Department of Corrections identification number</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Payment Method <span class="text-red-500">*</span>
+                            </label>
+                            <select name="payment_type" id="payment_type" required
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Select payment method</option>
+                                <option value="Private Pay">Private Pay (Self)</option>
+                                <option value="Voucher">Voucher Program</option>
+                                <option value="Family Support">Family Support</option>
+                                <option value="ERD">ERD (Emergency Relief from Destitution)</option>
+                            </select>
+                        </div>
+
+                        <!-- Voucher-specific fields (hidden by default) -->
+                        <div id="voucher-fields" class="hidden space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Voucher Start Date
+                                </label>
+                                <input type="date" name="voucher_start"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Voucher End Date
+                                </label>
+                                <input type="date" name="voucher_end"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emergency Contact Section -->
+                <div class="mb-8">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 pb-2 border-b">Emergency Contact (Optional)</h2>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Emergency Contact Name
+                            </label>
+                            <input type="text" name="emergency_contact_name"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="Contact person name">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Emergency Contact Phone
+                            </label>
+                            <input type="tel" name="emergency_contact_phone"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="(206) 555-1234">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Relationship
+                            </label>
+                            <input type="text" name="emergency_contact_relationship"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="e.g., Parent, Sibling, Friend">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Notes Section -->
+                <div class="mb-8">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 pb-2 border-b">Additional Information</h2>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Additional Notes or Special Needs
+                        </label>
+                        <textarea name="notes" rows="4"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Any information that would help us prepare for your arrival..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button type="submit"
+                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-md transition duration-200">
+                        Submit Intake Form
+                    </button>
+                    <button type="reset"
+                        class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-6 rounded-md transition duration-200">
+                        Clear Form
+                    </button>
+                </div>
+
+                <!-- Required Fields Notice -->
+                <p class="text-xs text-gray-500 mt-4 text-center">
+                    <span class="text-red-500">*</span> Required fields
+                </p>
+            </form>
+
+            <!-- Success Message (hidden by default) -->
+            <div id="success-message" class="hidden mt-6 p-4 bg-green-50 border border-green-200 rounded-md">
+                <div class="flex items-center">
+                    <svg class="w-6 h-6 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div>
+                        <p class="font-medium text-green-800">Form submitted successfully!</p>
+                        <p class="text-sm text-green-700 mt-1">The housing manager will review your information and contact you soon.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Text -->
+        <div class="mt-6 text-center text-sm text-gray-600">
+            <p>Need help? Contact the housing office at (206) 555-HELP</p>
+        </div>
+    </main>
+
+    <script>
+        // Show/hide voucher fields based on payment type selection
+        document.getElementById('payment_type').addEventListener('change', function() {
+            const voucherFields = document.getElementById('voucher-fields');
+            if (this.value === 'Voucher') {
+                voucherFields.classList.remove('hidden');
+            } else {
+                voucherFields.classList.add('hidden');
+            }
+        });
+
+        // Form submission handler
+        document.getElementById('intake-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // In a real application, this would send data to the backend
+            // For the prototype, we'll just show a success message
+
+            // Hide form
+            this.style.display = 'none';
+
+            // Show success message
+            document.getElementById('success-message').classList.remove('hidden');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Log form data (for demo purposes)
+            const formData = new FormData(this);
+            console.log('Form submitted with data:', Object.fromEntries(formData));
+        });
+    </script>
+</body>
+</html>

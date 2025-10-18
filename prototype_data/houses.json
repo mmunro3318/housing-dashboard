@@ -1,0 +1,26 @@
+[
+  {
+    "house_id": "house_1",
+    "address": "1234 Pine Street, Seattle, WA 98101",
+    "total_beds": 9,
+    "notes": "Recently renovated"
+  },
+  {
+    "house_id": "house_2",
+    "address": "5678 Broadway Ave, Seattle, WA 98102",
+    "total_beds": 12,
+    "notes": ""
+  },
+  {
+    "house_id": "house_3",
+    "address": "910 Madison St, Seattle, WA 98104",
+    "total_beds": 10,
+    "notes": ""
+  },
+  {
+    "house_id": "house_4",
+    "address": "2345 Summit Ave, Seattle, WA 98122",
+    "total_beds": 9,
+    "notes": ""
+  }
+]

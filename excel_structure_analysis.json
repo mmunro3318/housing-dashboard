@@ -1,0 +1,886 @@
+{
+  "sheet_names": [
+    "RIDE LIST",
+    "2024 Accepted Housing",
+    "2025 Accepted Housing",
+    "CURR HOUSING SHEET USE THIS",
+    "RENT DUE 10.01.2025",
+    "09.12.2025 CURRENT MOVE ",
+    "Moving List MOU",
+    "MOVING LIST PER STEVE",
+    "RENT DUE 09.01.2025",
+    "RENT DUE 08.01.2025",
+    "Steve Dalton Form",
+    "Funding Programs",
+    "RENT DUE 07.01.2025",
+    "Budget 2025",
+    "2025 Need to fill beds",
+    "RENT DUE 05.01.2025",
+    "RENT DUE 04.01.2025",
+    "RENT DUE 06.01.2025",
+    "RENT DUE 03.01.2025",
+    "RENT DUE 2.01.2025",
+    "RENT DUE 01.01.2025",
+    "2024 WAITING LIST",
+    "RENT DUE 12.01.2024",
+    "RENT DUE 11.01.2024",
+    "RENT DUE 10.01.2024",
+    "RENT DUE DATES 09.01.2024",
+    "RENT DUE DATES 08.01.2024",
+    "RENT DUE DATES 07.2024 NEW",
+    "RENT DUE DATES 06.2024",
+    "ISSUE NOTES",
+    "2024 Budget",
+    "RENT DUE DATES 05.24",
+    "RENT DUE DATES 04.24",
+    "RENT DUE 03.2024",
+    "2024 Pending Housing",
+    "House leaders info",
+    "DOC Offices Contacts"
+  ],
+  "sheets": {
+    "RIDE LIST": {
+      "row_count": 21,
+      "column_count": 2,
+      "columns": {
+        "Mikel": {
+          "data_type": "object",
+          "non_null_count": 17,
+          "null_count": 4,
+          "sample_pattern": [
+            "<string, len=5>",
+            "<string, len=13>",
+            "<string, len=11>"
+          ]
+        },
+        "Arrived": {
+          "data_type": "object",
+          "non_null_count": 16,
+          "null_count": 5,
+          "sample_pattern": [
+            "<string, len=7>",
+            "<string, len=7>",
+            "<datetime>"
+          ]
+        }
+      }
+    },
+    "2024 Accepted Housing": {
+      "row_count": 207,
+      "column_count": 23,
+      "columns": {
+        "House Number": {
+          "data_type": "object",
+          "non_null_count": 106,
+          "null_count": 101,
+          "sample_pattern": [
+            "<string, len=19>",
+            "<string, len=13>",
+            "<string, len=13>"
+          ]
+        },
+        "Status of Arrival": {
+          "data_type": "object",
+          "non_null_count": 98,
+          "null_count": 109,
+          "sample_pattern": [
+            "<string, len=15>",
+            "<string, len=8>",
+            "<string, len=8>"
+          ]
+        },
+        "Room Number": {
+          "data_type": "object",
+          "non_null_count": 70,
+          "null_count": 137,
+          "sample_pattern": [
+            "<string, len=17>",
+            "<string, len=17>",
+            "<string, len=15>"
+          ]
+        },
+        "Room ": {
+          "data_type": "object",
+          "non_null_count": 81,
+          "null_count": 126,
+          "sample_pattern": [
+            "<number>",
+            "<number>",
+            "<number>"
+          ]
+        },
+        "Name of Participants": {
+          "data_type": "object",
+          "non_null_count": 66,
+          "null_count": 141,
+          "sample_pattern": [
+            "<string, len=7>",
+            "<string, len=17>",
+            "<string, len=14>"
+          ]
+        },
+        "DOC# - Telecare- Private- Harps- Hen": {
+          "data_type": "object",
+          "non_null_count": 67,
+          "null_count": 140,
+          "sample_pattern": [
+            "<string, len=9>",
+            "<string, len=10>",
+            "<string, len=15>"
+          ]
+        },
+        "PILL LINE & UA ": {
+          "data_type": "object",
+          "non_null_count": 50,
+          "null_count": 157,
+          "sample_pattern": [
+            "<string, len=25>",
+            "<string, len=31>",
+            "<string, len=25>"
+          ]
+        },
+        "How does participant pay": {
+          "data_type": "object",
+          "non_null_count": 58,
+          "null_count": 149,
+          "sample_pattern": [
+            "<string, len=19>",
+            "<string, len=19>",
+            "<string, len=19>"
+          ]
+        },
+        "Date of entry": {
+          "data_type": "object",
+          "non_null_count": 43,
+          "null_count": 164,
+          "sample_pattern": [
+            "<datetime>",
+            "<datetime>",
+            "<datetime>"
+          ]
+        },
+        "Date voucher ends": {
+          "data_type": "object",
+          "non_null_count": 12,
+          "null_count": 195,
+          "sample_pattern": [
+            "<string, len=11>",
+            "<string, len=3>",
+            "<string, len=4>"
+          ]
+        },
+        "Age": {
+          "data_type": "float64",
+          "non_null_count": 36,
+          "null_count": 171,
+          "sample_pattern": [
+            "<number>",
+            "<number>",
+            "<number>"
+          ]
+        },
+        "Mental Health Code": {
+          "data_type": "object",
+          "non_null_count": 15,
+          "null_count": 192,
+          "sample_pattern": [
+            "<string, len=12>",
+            "<string, len=10>",
+            "<string, len=34>"
+          ]
+        },
+        "Crime": {
+          "data_type": "object",
+          "non_null_count": 30,
+          "null_count": 177,
+          "sample_pattern": [
+            "<string, len=13>",
+            "<string, len=27>",
+            "<string, len=10>"
+          ]
+        },
+        "SO Level": {
+          "data_type": "object",
+          "non_null_count": 10,
+          "null_count": 197,
+          "sample_pattern": [
+            "<string, len=21>",
+            "<number>",
+            "<string, len=26>"
+          ]
+        },
+        "NOTES ": {
+          "data_type": "object",
+          "non_null_count": 29,
+          "null_count": 178,
+          "sample_pattern": [
+            "<string, len=14>",
+            "<string, len=39>",
+            "<string, len=42>"
+          ]
+        },
+        "Classification Counselor": {
+          "data_type": "object",
+          "non_null_count": 8,
+          "null_count": 199,
+          "sample_pattern": [
+            "<string, len=26>",
+            "<string, len=44>",
+            "<string, len=14>"
+          ]
+        },
+        "Classification counselor phone number": {
+          "data_type": "object",
+          "non_null_count": 10,
+          "null_count": 197,
+          "sample_pattern": [
+            "<string, len=6>",
+            "<string, len=29>",
+            "<string, len=14>"
+          ]
+        },
+        "CCO Name": {
+          "data_type": "object",
+          "non_null_count": 12,
+          "null_count": 195,
+          "sample_pattern": [
+            "<string, len=13>",
+            "<string, len=60>",
+            "<string, len=11>"
+          ]
+        },
+        "CCO Phone number": {
+          "data_type": "object",
+          "non_null_count": 3,
+          "null_count": 204,
+          "sample_pattern": [
+            "<string, len=24>",
+            "<string, len=1>",
+            "<string, len=12>"
+          ]
+        },
+        "ABHS Counselor": {
+          "data_type": "object",
+          "non_null_count": 2,
+          "null_count": 205,
+          "sample_pattern": [
+            "<string, len=28>",
+            "<string, len=36>"
+          ]
+        },
+        "Email": {
+          "data_type": "object",
+          "non_null_count": 4,
+          "null_count": 203,
+          "sample_pattern": [
+            "<string, len=26>",
+            "<string, len=12>",
+            "<string, len=17>"
+          ]
+        },
+        "Other contact information": {
+          "data_type": "object",
+          "non_null_count": 5,
+          "null_count": 202,
+          "sample_pattern": [
+            "<string, len=29>",
+            "<string, len=39>",
+            "<string, len=12>"
+          ]
+        },
+        " ": {
+          "data_type": "float64",
+          "non_null_count": 0,
+          "null_count": 207,
+          "sample_pattern": []
+        }
+      }
+    },
+    "2025 Accepted Housing": {
+      "row_count": 206,
+      "column_count": 20,
+      "columns": {
+        ",": {
+          "data_type": "object",
+          "non_null_count": 162,
+          "null_count": 44,
+          "sample_pattern": [
+            "<string, len=16>",
+            "<string, len=10>",
+            "<string, len=10>"
+          ]
+        },
+        "Status of Arrival": {
+          "data_type": "object",
+          "non_null_count": 146,
+          "null_count": 60,
+          "sample_pattern": [
+            "<string, len=16>",
+            "<string, len=15>",
+            "<string, len=7>"
+          ]
+        },
+        "Date of entry": {
+          "data_type": "object",
+          "non_null_count": 105,
+          "null_count": 101,
+          "sample_pattern": [
+            "<string, len=8>",
+            "<string, len=3>",
+            "<string, len=20>"
+          ]
+        },
+        "Unnamed: 3": {
+          "data_type": "object",
+          "non_null_count": 105,
+          "null_count": 101,
+          "sample_pattern": [
+            "<number>",
+            "<number>",
+            "<number>"
+          ]
+        },
+        "CCO Number": {
+          "data_type": "object",
+          "non_null_count": 84,
+          "null_count": 122,
+          "sample_pattern": [
+            "<datetime>",
+            "<number>",
+            "<string, len=3>"
+          ]
+        },
+        "Name of Participants": {
+          "data_type": "object",
+          "non_null_count": 104,
+          "null_count": 102,
+          "sample_pattern": [
+            "<string, len=14>",
+            "<string, len=14>",
+            "<string, len=20>"
+          ]
+        },
+        "DOC# - Telecare- Private- Harps- Hen": {
+          "data_type": "object",
+          "non_null_count": 104,
+          "null_count": 102,
+          "sample_pattern": [
+            "<string, len=10>",
+            "<string, len=10>",
+            "<string, len=10>"
+          ]
+        },
+        "Medication Waiver": {
+          "data_type": "object",
+          "non_null_count": 38,
+          "null_count": 168,
+          "sample_pattern": [
+            "<string, len=3>",
+            "<string, len=3>",
+            "<number>"
+          ]
+        },
+        "How does participant pay": {
+          "data_type": "object",
+          "non_null_count": 91,
+          "null_count": 115,
+          "sample_pattern": [
+            "<string, len=3>",
+            "<string, len=3>",
+            "<string, len=3>"
+          ]
+        },
+        "Age": {
+          "data_type": "object",
+          "non_null_count": 43,
+          "null_count": 163,
+          "sample_pattern": [
+            "<number>",
+            "<number>",
+            "<number>"
+          ]
+        },
+        "Mental Health Code": {
+          "data_type": "object",
+          "non_null_count": 15,
+          "null_count": 191,
+          "sample_pattern": [
+            "<string, len=3>",
+            "<string, len=20>",
+            "<string, len=23>"
+          ]
+        },
+        "Crime": {
+          "data_type": "object",
+          "non_null_count": 37,
+          "null_count": 169,
+          "sample_pattern": [
+            "<string, len=27>",
+            "<string, len=15>",
+            "<string, len=19>"
+          ]
+        },
+        "-": {
+          "data_type": "object",
+          "non_null_count": 14,
+          "null_count": 192,
+          "sample_pattern": [
+            "<string, len=26>",
+            "<string, len=12>",
+            "<number>"
+          ]
+        },
+        "Classification counselor phone number": {
+          "data_type": "object",
+          "non_null_count": 8,
+          "null_count": 198,
+          "sample_pattern": [
+            "<string, len=17>",
+            "<string, len=17>",
+            "<string, len=24>"
+          ]
+        },
+        "CCO Name": {
+          "data_type": "object",
+          "non_null_count": 10,
+          "null_count": 196,
+          "sample_pattern": [
+            "<string, len=3>",
+            "<string, len=1>",
+            "<string, len=20>"
+          ]
+        },
+        "CCO Phone number": {
+          "data_type": "object",
+          "non_null_count": 6,
+          "null_count": 200,
+          "sample_pattern": [
+            "<string, len=1>",
+            "<string, len=12>",
+            "<string, len=12>"
+          ]
+        },
+        "ABHS Counselor": {
+          "data_type": "object",
+          "non_null_count": 2,
+          "null_count": 204,
+          "sample_pattern": [
+            "<string, len=16>",
+            "<string, len=11>"
+          ]
+        },
+        "Email": {
+          "data_type": "object",
+          "non_null_count": 2,
+          "null_count": 204,
+          "sample_pattern": [
+            "<string, len=20>",
+            "<string, len=12>"
+          ]
+        },
+        "Other contact information": {
+          "data_type": "object",
+          "non_null_count": 3,
+          "null_count": 203,
+          "sample_pattern": [
+            "<string, len=12>",
+            "<string, len=12>",
+            "<string, len=39>"
+          ]
+        },
+        " ": {
+          "data_type": "float64",
+          "non_null_count": 0,
+          "null_count": 206,
+          "sample_pattern": []
+        }
+      }
+    },
+    "CURR HOUSING SHEET USE THIS": {
+      "row_count": 141,
+      "column_count": 10,
+      "columns": {
+        "House Residents": {
+          "data_type": "object",
+          "non_null_count": 137,
+          "null_count": 4,
+          "sample_pattern": [
+            "<datetime>",
+            "<string, len=13>",
+            "<string, len=13>"
+          ]
+        },
+        "Name": {
+          "data_type": "object",
+          "non_null_count": 114,
+          "null_count": 27,
+          "sample_pattern": [
+            "<string, len=13>",
+            "<string, len=16>",
+            "<string, len=15>"
+          ]
+        },
+        "DOC Number": {
+          "data_type": "object",
+          "non_null_count": 80,
+          "null_count": 61,
+          "sample_pattern": [
+            "<string, len=10>",
+            "<string, len=10>",
+            "<number>"
+          ]
+        },
+        "Arriving/Comments ": {
+          "data_type": "object",
+          "non_null_count": 41,
+          "null_count": 100,
+          "sample_pattern": [
+            "<string, len=41>",
+            "<string, len=1>",
+            "<string, len=21>"
+          ]
+        },
+        "ERD/GRE/TELECARE": {
+          "data_type": "object",
+          "non_null_count": 92,
+          "null_count": 49,
+          "sample_pattern": [
+            "<string, len=7>",
+            "<string, len=7>",
+            "<string, len=7>"
+          ]
+        },
+        "Rent amount": {
+          "data_type": "object",
+          "non_null_count": 107,
+          "null_count": 34,
+          "sample_pattern": [
+            "<number>",
+            "<number>",
+            "<number>"
+          ]
+        },
+        "Comments ": {
+          "data_type": "object",
+          "non_null_count": 23,
+          "null_count": 118,
+          "sample_pattern": [
+            "<string, len=14>",
+            "<string, len=30>",
+            "<string, len=1>"
+          ]
+        },
+        "Income": {
+          "data_type": "object",
+          "non_null_count": 15,
+          "null_count": 126,
+          "sample_pattern": [
+            "<number>",
+            "<number>",
+            "<number>"
+          ]
+        },
+        "Unnamed: 8": {
+          "data_type": "object",
+          "non_null_count": 4,
+          "null_count": 137,
+          "sample_pattern": [
+            "<string, len=22>",
+            "<string, len=19>",
+            "<string, len=13>"
+          ]
+        },
+        "Unnamed: 9": {
+          "data_type": "object",
+          "non_null_count": 1,
+          "null_count": 140,
+          "sample_pattern": [
+            "<string, len=24>"
+          ]
+        }
+      }
+    },
+    "RENT DUE 10.01.2025": {
+      "row_count": 109,
+      "column_count": 10,
+      "columns": {
+        "House Residents": {
+          "data_type": "object",
+          "non_null_count": 105,
+          "null_count": 4,
+          "sample_pattern": [
+            "<string, len=15>",
+            "<string, len=16>",
+            "<string, len=13>"
+          ]
+        },
+        "Name": {
+          "data_type": "object",
+          "non_null_count": 102,
+          "null_count": 7,
+          "sample_pattern": [
+            "<string, len=12>",
+            "<string, len=10>",
+            "<string, len=15>"
+          ]
+        },
+        "DOC Number": {
+          "data_type": "object",
+          "non_null_count": 67,
+          "null_count": 42,
+          "sample_pattern": [
+            "<number>",
+            "<string, len=10>",
+            "<number>"
+          ]
+        },
+        "Arriving/Comments ": {
+          "data_type": "object",
+          "non_null_count": 31,
+          "null_count": 78,
+          "sample_pattern": [
+            "<string, len=11>",
+            "<string, len=11>",
+            "<string, len=57>"
+          ]
+        },
+        "ERD/GRE/TELECARE": {
+          "data_type": "object",
+          "non_null_count": 95,
+          "null_count": 14,
+          "sample_pattern": [
+            "<string, len=7>",
+            "<string, len=7>",
+            "<string, len=3>"
+          ]
+        },
+        "Rent amount": {
+          "data_type": "float64",
+          "non_null_count": 94,
+          "null_count": 15,
+          "sample_pattern": [
+            "<number>",
+            "<number>",
+            "<number>"
+          ]
+        },
+        "Comments ": {
+          "data_type": "object",
+          "non_null_count": 49,
+          "null_count": 60,
+          "sample_pattern": [
+            "<number>",
+            "<string, len=14>",
+            "<string, len=28>"
+          ]
+        },
+        "Income": {
+          "data_type": "object",
+          "non_null_count": 70,
+          "null_count": 39,
+          "sample_pattern": [
+            "<number>",
+            "<number>",
+            "<number>"
+          ]
+        },
+        "Comments": {
+          "data_type": "object",
+          "non_null_count": 27,
+          "null_count": 82,
+          "sample_pattern": [
+            "<number>",
+            "<string, len=1>",
+            "<string, len=1>"
+          ]
+        },
+        "Paid": {
+          "data_type": "object",
+          "non_null_count": 24,
+          "null_count": 85,
+          "sample_pattern": [
+            "<number>",
+            "<number>",
+            "<number>"
+          ]
+        }
+      }
+    },
+    "09.12.2025 CURRENT MOVE ": {
+      "row_count": 38,
+      "column_count": 11,
+      "columns": {
+        "HOUSE AVAILABLE": {
+          "data_type": "object",
+          "non_null_count": 37,
+          "null_count": 1,
+          "sample_pattern": [
+            "<string, len=21>",
+            "<string, len=5>",
+            "<string, len=5>"
+          ]
+        },
+        "House": {
+          "data_type": "object",
+          "non_null_count": 35,
+          "null_count": 3,
+          "sample_pattern": [
+            "<number>",
+            "<number>",
+            "<number>"
+          ]
+        },
+        "Client": {
+          "data_type": "object",
+          "non_null_count": 35,
+          "null_count": 3,
+          "sample_pattern": [
+            "<string, len=20>",
+            "<string, len=13>",
+            "<string, len=15>"
+          ]
+        },
+        "Unnamed: 3": {
+          "data_type": "object",
+          "non_null_count": 1,
+          "null_count": 37,
+          "sample_pattern": [
+            "<string, len=10>"
+          ]
+        },
+        "New or Gone": {
+          "data_type": "object",
+          "non_null_count": 14,
+          "null_count": 24,
+          "sample_pattern": [
+            "<string, len=4>",
+            "<string, len=7>",
+            "<string, len=7>"
+          ]
+        },
+        "AMOUNT TO COLLECT": {
+          "data_type": "object",
+          "non_null_count": 23,
+          "null_count": 15,
+          "sample_pattern": [
+            "<string, len=8>",
+            "<string, len=5>",
+            "<string, len=3>"
+          ]
+        },
+        "Off Voucher": {
+          "data_type": "object",
+          "non_null_count": 15,
+          "null_count": 23,
+          "sample_pattern": [
+            "<datetime>",
+            "<string, len=5>",
+            "<datetime>"
+          ]
+        },
+        "Amount Due": {
+          "data_type": "float64",
+          "non_null_count": 17,
+          "null_count": 21,
+          "sample_pattern": [
+            "<number>",
+            "<number>",
+            "<number>"
+          ]
+        },
+        "Moving to what Address": {
+          "data_type": "object",
+          "non_null_count": 18,
+          "null_count": 20,
+          "sample_pattern": [
+            "<string, len=17>",
+            "<string, len=12>",
+            "<string, len=12>"
+          ]
+        },
+        "Comments": {
+          "data_type": "object",
+          "non_null_count": 15,
+          "null_count": 23,
+          "sample_pattern": [
+            "<string, len=7>",
+            "<string, len=7>",
+            "<string, len=7>"
+          ]
+        },
+        "Unnamed: 10": {
+          "data_type": "object",
+          "non_null_count": 14,
+          "null_count": 24,
+          "sample_pattern": [
+            "<string, len=10>",
+            "<string, len=9>",
+            "<string, len=10>"
+          ]
+        }
+      }
+    },
+    "Moving List MOU": {
+      "row_count": 131,
+      "column_count": 13,
+      "columns": {
+        "Ready to move": {
+          "data_type": "object",
+          "non_null_count": 30,
+          "null_count": 101,
+          "sample_pattern": [
+            "<string, len=15>",
+            "<string, len=13>",
+            "<string, len=13>"
+          ]
+        },
+        "14934": {
+          "data_type": "object",
+          "non_null_count": 130,
+          "null_count": 1,
+          "sample_pattern": [
+            "<string, len=5>",
+            "<number>",
+            "<number>"
+          ]
+        },
+        "Tommy Gibson #333836": {
+          "data_type": "object",
+          "non_null_count": 121,
+          "null_count": 10,
+          "sample_pattern": [
+            "<string, len=6>",
+            "<string, len=15>",
+            "<string, len=14>"
+          ]
+        },
+        "Unnamed: 3": {
+          "data_type": "object",
+          "non_null_count": 28,
+          "null_count": 103,
+          "sample_pattern": [
+            "<string, len=7>",
+            "<string, len=7>",
+            "<string, len=7>"
+          ]
+        },
+        "Unnamed: 4": {
+          "data_type": "object",
+          "non_null_count": 28,
+          "null_count": 103,
+          "sample_pattern": [
+            "<string, len=11>",
+            "<string, len=6>",
+            "<string, len=6>"
+          ]
+        },
+        "2 months": {
+          "data_type": "object",
+          "non_null_count": 123,
+          "null_count": 8,
+          "sample_pattern": [
+            "<string, len=17>",
+            "<string, len=3>",
+            "<string, len=3>"
+          ]
+        }

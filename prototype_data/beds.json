@@ -1,0 +1,322 @@
+[
+  {
+    "bed_id": "bed_001",
+    "house_id": "house_1",
+    "room_number": "Room 1A",
+    "status": "Occupied",
+    "tenant_id": "tenant_001",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_002",
+    "house_id": "house_1",
+    "room_number": "Room 1B",
+    "status": "Occupied",
+    "tenant_id": "tenant_002",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_003",
+    "house_id": "house_1",
+    "room_number": "Room 2A",
+    "status": "Available",
+    "tenant_id": null,
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_004",
+    "house_id": "house_1",
+    "room_number": "Room 2B",
+    "status": "Occupied",
+    "tenant_id": "tenant_004",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_005",
+    "house_id": "house_1",
+    "room_number": "Room 3A",
+    "status": "Available",
+    "tenant_id": null,
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_006",
+    "house_id": "house_1",
+    "room_number": "Room 3B",
+    "status": "Available",
+    "tenant_id": null,
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_007",
+    "house_id": "house_1",
+    "room_number": "Room 4A",
+    "status": "Available",
+    "tenant_id": null,
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_008",
+    "house_id": "house_1",
+    "room_number": "Room 4B",
+    "status": "Occupied",
+    "tenant_id": "tenant_006",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_009",
+    "house_id": "house_1",
+    "room_number": "Room 5A",
+    "status": "Available",
+    "tenant_id": null,
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_010",
+    "house_id": "house_2",
+    "room_number": "Room 1A",
+    "status": "Occupied",
+    "tenant_id": "tenant_008",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_011",
+    "house_id": "house_2",
+    "room_number": "Room 1B",
+    "status": "Available",
+    "tenant_id": null,
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_012",
+    "house_id": "house_2",
+    "room_number": "Room 2A",
+    "status": "Available",
+    "tenant_id": null,
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_013",
+    "house_id": "house_2",
+    "room_number": "Room 2B",
+    "status": "Occupied",
+    "tenant_id": "tenant_009",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_014",
+    "house_id": "house_2",
+    "room_number": "Room 3A",
+    "status": "Occupied",
+    "tenant_id": "tenant_010",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_015",
+    "house_id": "house_2",
+    "room_number": "Room 3B",
+    "status": "Occupied",
+    "tenant_id": "tenant_011",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_016",
+    "house_id": "house_2",
+    "room_number": "Room 4A",
+    "status": "Occupied",
+    "tenant_id": "tenant_012",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_017",
+    "house_id": "house_2",
+    "room_number": "Room 4B",
+    "status": "Available",
+    "tenant_id": null,
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_018",
+    "house_id": "house_2",
+    "room_number": "Room 5A",
+    "status": "Available",
+    "tenant_id": null,
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_019",
+    "house_id": "house_2",
+    "room_number": "Room 5B",
+    "status": "Occupied",
+    "tenant_id": "tenant_014",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_020",
+    "house_id": "house_2",
+    "room_number": "Room 6A",
+    "status": "Occupied",
+    "tenant_id": "tenant_015",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_021",
+    "house_id": "house_2",
+    "room_number": "Room 6B",
+    "status": "Occupied",
+    "tenant_id": "tenant_016",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_022",
+    "house_id": "house_3",
+    "room_number": "Room 1A",
+    "status": "Available",
+    "tenant_id": null,
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_023",
+    "house_id": "house_3",
+    "room_number": "Room 1B",
+    "status": "Occupied",
+    "tenant_id": "tenant_018",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_024",
+    "house_id": "house_3",
+    "room_number": "Room 2A",
+    "status": "Occupied",
+    "tenant_id": "tenant_019",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_025",
+    "house_id": "house_3",
+    "room_number": "Room 2B",
+    "status": "Occupied",
+    "tenant_id": "tenant_020",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_026",
+    "house_id": "house_3",
+    "room_number": "Room 3A",
+    "status": "Pending",
+    "tenant_id": "tenant_021",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_027",
+    "house_id": "house_3",
+    "room_number": "Room 3B",
+    "status": "Occupied",
+    "tenant_id": "tenant_022",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_028",
+    "house_id": "house_3",
+    "room_number": "Room 4A",
+    "status": "Available",
+    "tenant_id": null,
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_029",
+    "house_id": "house_3",
+    "room_number": "Room 4B",
+    "status": "Available",
+    "tenant_id": null,
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_030",
+    "house_id": "house_3",
+    "room_number": "Room 5A",
+    "status": "Available",
+    "tenant_id": null,
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_031",
+    "house_id": "house_3",
+    "room_number": "Room 5B",
+    "status": "Occupied",
+    "tenant_id": "tenant_024",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_032",
+    "house_id": "house_4",
+    "room_number": "Room 1A",
+    "status": "Available",
+    "tenant_id": null,
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_033",
+    "house_id": "house_4",
+    "room_number": "Room 1B",
+    "status": "Occupied",
+    "tenant_id": "tenant_025",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_034",
+    "house_id": "house_4",
+    "room_number": "Room 2A",
+    "status": "Occupied",
+    "tenant_id": "tenant_026",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_035",
+    "house_id": "house_4",
+    "room_number": "Room 2B",
+    "status": "Occupied",
+    "tenant_id": "tenant_027",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_036",
+    "house_id": "house_4",
+    "room_number": "Room 3A",
+    "status": "Occupied",
+    "tenant_id": "tenant_028",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_037",
+    "house_id": "house_4",
+    "room_number": "Room 3B",
+    "status": "Available",
+    "tenant_id": null,
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_038",
+    "house_id": "house_4",
+    "room_number": "Room 4A",
+    "status": "Occupied",
+    "tenant_id": "tenant_030",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_039",
+    "house_id": "house_4",
+    "room_number": "Room 4B",
+    "status": "Occupied",
+    "tenant_id": "tenant_031",
+    "notes": ""
+  },
+  {
+    "bed_id": "bed_040",
+    "house_id": "house_4",
+    "room_number": "Room 5A",
+    "status": "Occupied",
+    "tenant_id": "tenant_032",
+    "notes": ""
+  }
+]

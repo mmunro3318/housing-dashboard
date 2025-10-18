@@ -1,0 +1,10 @@
+{
+  "total_beds": 40,
+  "occupied_beds": 24,
+  "available_beds": 15,
+  "pending_beds": 1,
+  "hold_beds": 0,
+  "occupancy_rate": 60.0,
+  "total_tenants": 25,
+  "exited_tenants": 7
+}
