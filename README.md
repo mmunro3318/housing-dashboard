@@ -35,6 +35,35 @@ See [project-roadmap.md](project-roadmap.md) for planned features and milestones
 
 Pull requests, issue reporting, and feedback are welcomed.
 
+## Running the Prototype
+
+**Note:** This is a static HTML prototype for requirements gathering and client feedback. The production application will be built with React + Node.js.
+
+To view the prototype locally:
+
+1. Clone this repository
+   ```bash
+   git clone https://github.com/mmunro3318/housing-dashboard.git
+   cd housing-dashboard
+   ```
+
+2. Open the prototype in your browser
+   ```bash
+   cd prototype
+   # Then open index.html in your browser:
+   # - Windows: start index.html
+   # - macOS: open index.html
+   # - Linux: xdg-open index.html
+   ```
+
+3. Navigate between pages:
+   - **Dashboard** (`index.html`) - Overview metrics and alerts
+   - **Properties** (`properties.html`) - Property and bed management
+   - **Tenants** (`tenants.html`) - Searchable tenant list
+   - **Intake Form** (`intake-form.html`) - Mobile-responsive tenant intake
+
+The prototype uses fake data loaded from `prototype/js/data.js`.
+
 ## Contact
 
 Project Lead: [Michael Munro](m.munro3318@gmail.com)
@@ -42,5 +71,3 @@ Project Lead: [Michael Munro](m.munro3318@gmail.com)
 ## License
 
 [MIT License](LICENSE) (or other as appropriate)
-
-<!-- Setup instructions to be added upon project completion -->
