@@ -15,6 +15,74 @@ This is a halfway housing management dashboard system designed to replace chaoti
 
 **Note** This project uses pure JavaScript -- **_no_** TypeScript!
 
+## Project Context
+
+**Dual Purpose:**
+
+This project serves two goals:
+1. **Real-world client project** - Solving an actual business problem for a halfway housing manager
+2. **Academic project** - Used for ITAD-300 Software Engineering coursework at Edmonds College
+
+As such, development must balance practical delivery with educational value.
+
+**Repository Hosting:**
+
+This repository is maintained on **both GitLab and GitHub**:
+- **GitLab** (`origin`): Primary for CI/CD, Issues/Epics, and class requirements
+- **GitHub** (`github`): Portfolio visibility and industry-standard showcase
+
+**IMPORTANT**: Always push commits to both remotes:
+```bash
+git push origin main && git push github main
+```
+
+## Working with This Repository
+
+**Educational Approach:**
+
+When working with the developer (Michael), always:
+
+1. **Explain everything** - Assume limited experience with newer tools/concepts
+2. **Outline before implementing** - Present plans and get approval before coding
+3. **Walk through your thinking** - Explain why you're choosing specific approaches
+4. **Stop and discuss** - For any new dependencies, architectural decisions, or deviations
+
+**Developer Experience Level:**
+
+- **Strong**: MERN stack (MongoDB, Express, React, Node.js)
+- **Some exposure**: Supabase, Vercel deployment
+- **Limited**: Jest/Vitest testing
+- **No experience**: CI/CD pipelines
+
+Adjust explanations accordingly. Don't assume knowledge of advanced patterns or tools.
+
+## Tech Stack Constraints
+
+**CRITICAL**: Never deviate from the established tech stack without explicit discussion.
+
+**Approved Stack:**
+- Frontend: React + Vite + Tailwind CSS + RTK Query/Redux
+- Backend: Node.js + Express
+- Database: Supabase (PostgreSQL)
+- Hosting: Vercel (frontend) + Supabase Cloud (database)
+- Language: Pure JavaScript (NO TypeScript)
+
+**Before Adding New Dependencies:**
+
+1. **STOP** - Don't install anything immediately
+2. **Explain the need** - What problem requires this dependency?
+3. **Consider alternatives** - Can we solve this with existing tools?
+4. **Evaluate simplicity** - Is there a simpler solution?
+5. **Prioritize value** - Does this directly serve client/user needs?
+
+**Guiding Principle**: Keep the stack as simple as possible. Focus on delivering client value, not showcasing technical complexity.
+
+## Skills and Agents
+
+This repository may use Anthropic's **Skills** feature for specialized tasks. See SKILLS.md documentation for implementation details (to be added).
+
+Custom subagents may be configured in `.claude/agents/` for domain-specific tasks like schema design, API development, or testing.
+
 ## Current Project State
 
 This project is in **pre-development phase**. The repository contains:
