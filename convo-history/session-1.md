@@ -1,6 +1,4 @@
-# Track Convos with Claude for this Project
-
-## Session 1 -- Brainstorming
+# Session 1 -- Brainstorming Project Scope and Requirements
 
 ### User
 
@@ -815,3 +813,145 @@ Key files for Sunday:
 - PRODUCT_SPEC.md Section 10 (questions to ask)
 
 Your context is preserved and ready to continue after the demo! 🎉
+
+### User
+
+Perfect! I'll check back in with you later after the meeting. Some
+thoughts on a few current steps -- I should likely start a new context session with you, rather than just compacting. How should I initiate the next session with you? Perhaps construct a prompt to supply to a new session that references any important docs you should review before we implement manager's feedback. Secondly, I want to also equip with you some subagents -- any thoughts on specific subagents I could create for you?
+
+### Claude
+
+● Excellent thinking! You're absolutely right on both counts.
+
+1. Starting Your Next Session
+
+Here's a prompt template you can use to onboard the next Claude instance efficiently:
+
+I'm continuing development on a halfway housing management dashboard after a client demo. Please read these files in order to understand the project state:
+
+1. **CLAUDE.md** - Technical guidance and architecture overview
+2. **PRODUCT_SPEC.md** - Current epics, user stories, and requirements
+3. **SCHEMA_UPDATES.md** - Database schema changes pending implementation
+4. **POST_FEEDBACK_UPDATES.md** - Recent changes from last feedback session
+5. **todo.md** - Current project status and roadmap
+
+**Project Status:**
+
+- Just completed: Client demo of HTML prototype (Sunday, Oct 19)
+- Current phase: Requirements validation
+- Next phase: Incorporate client feedback and begin MVP development
+
+**Client Feedback Summary:**
+[Paste your notes from today's meeting here]
+
+**Immediate Tasks:**
+[What you want to work on - e.g., "Update prototype based on feedback", "Refine schema", "Begin backend setup"]
+
+The repo is hosted on both GitLab (for class/CI-CD) and GitHub (for portfolio). Always push to both remotes.
+
+This gives Claude everything needed without overwhelming context.
+
+2. Custom Subagents for This Project
+
+Great idea! Here are subagents that would be valuable:
+
+High Priority:
+
+schema-designer - Database schema specialist
+
+- Reviews and validates database designs
+- Suggests indexes, constraints, relationships
+- Helps with migration strategies
+- Expertise in PostgreSQL/Supabase
+
+api-builder - Backend API specialist
+
+- Builds Express.js REST endpoints
+- Implements authentication/authorization
+- Follows RESTful best practices
+- Integrates with Supabase
+
+react-developer - Frontend specialist
+
+- Builds React components with modern patterns
+- Implements state management (Redux/RTK)
+- Focuses on accessibility and mobile responsiveness
+- Tailwind CSS expertise
+
+Medium Priority:
+
+requirements-analyst - Translates user feedback into technical specs
+
+- Reviews client feedback
+- Updates PRODUCT_SPEC.md
+- Breaks down epics into user stories
+- Identifies edge cases
+
+test-engineer - Testing specialist
+
+- Writes unit/integration tests
+- Suggests test cases for features
+- Sets up testing infrastructure
+
+Would you like me to create configuration files for any of these subagents now? They'd live in .claude/agents/ and you could invoke them with commands like /agent schema-designer or through the Task tool.
+
+Or would you prefer to wait until after your client meeting when you know what work is coming next?
+
+### User
+
+I'm definitely curious to see how you wold create the agent files -- I've experimented with many different formats with mixed results. I'll likely consult other documentation and community feedback for additional ideas before committing any agents to your `.claude/agents` directory. But I've had a thought -- we should likely update the Claude file to include a few specific expectations for this repo you should always be aware of. Like the fact that I'm also using this project for class to apply material to a real world problem as I work, and that we're deploying to both repos on GitLab and GitHub. We should also specifiy that for education purposes, you should always be explaining everything to me and coming to me with outlines of what you want to do first, and walking me through your ideas/thoughts and plans for implementations. Because my experience is limited (mostly MERN stack with some exposure to Supabase and Vercel, a little exposure to unit testing with Jest/Vitest, and absolutely no experience with CI/CD), you should never deviate from the tech stack -- if we encounter situations where we need additional dependencies, we should _stop_ and think: plan out what dependencies we need, consider alternatives, and try to stick to the simplest tech stack possible to focus on delivering client and user value. Anthropic (your creators!) also just released documenation on "Skills" (SKILLS.md) that we'll want to research and incorporate as well.
+
+### Claude
+
+● Excellent! ✅ CLAUDE.md has been updated and pushed to both repos.
+
+What I Added:
+
+1. Project Context Section
+
+- Documents dual purpose (client work + ITAD-300 coursework)
+- Notes need to balance practical delivery with educational value
+- Explains GitLab + GitHub dual hosting setup
+- Critical reminder: Always push to both remotes
+
+2. Working with This Repository Section
+
+- Educational approach principles (explain, outline, walk through, discuss)
+- Your experience level documented:
+  - Strong: MERN stack
+  - Some: Supabase, Vercel
+  - Limited: Jest/Vitest
+  - None: CI/CD
+- This helps Claude calibrate explanations appropriately
+
+3. Tech Stack Constraints Section
+
+- CRITICAL directive: Never deviate without discussion
+- Lists approved stack explicitly
+- 5-step process before adding any new dependency:
+  a. STOP
+  b. Explain the need
+  c. Consider alternatives
+  d. Evaluate simplicity
+  e. Prioritize client value
+- Guiding principle: Simplicity over technical complexity
+
+4. Skills and Agents Section
+
+- Placeholder for future Skills integration (SKILLS.md)
+- Notes custom agents may be added to .claude/agents/
+
+Why This Matters:
+
+When you start your next session with a new Claude instance, it will:
+
+- ✅ Know to explain concepts you're less familiar with (CI/CD, advanced patterns)
+- ✅ Present outlines and wait for approval before coding
+- ✅ Never surprise you with new dependencies
+- ✅ Remember to push to both repos
+- ✅ Prioritize educational value alongside delivery
+
+For your next session prompt, you can now just say:
+"I've just completed a client demo. Please read CLAUDE.md, PRODUCT_SPEC.md, and SCHEMA_UPDATES.md. Here's the feedback from today's meeting: [your notes]"
+
+And the new Claude will immediately understand the context, constraints, and approach. Good luck with your meeting! 🎯

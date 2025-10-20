@@ -291,21 +291,217 @@ _Track payments, vouchers, and rental history_
 
 #### Epic 3.3: Rental History & Ledger (Post-MVP)
 
-**Description**: Maintain detailed transaction history for auditing and reporting
+**Description**: Implement comprehensive payment tracking infrastructure with transaction ledger, manual payment recording, automated billing cycles, and reporting capabilities. This epic establishes the foundation for financial record-keeping and enables future online payment integration.
 
 **User Stories**:
 
-- As a manager, I want to view a tenant's complete payment history so I can verify records
-- As a manager, I want to export payment histories so I can provide them to auditors
-- As a manager, I want to track partial payments so I have accurate ledgers
-- As a manager, I want to view a property's entire rental history for financial records and auditing
+**Story 3.3.1: Payment Ledger Schema Implementation**
 
-**Acceptance Criteria**:
+As a developer, I need to create a payment ledger table in the database so that all financial transactions are recorded with full audit history.
 
-- Transaction ledger table (separate from tenants)
-- Payment history view per tenant
-- Export to CSV
-- Running balance calculations
+Acceptance Criteria:
+- `payment_ledger` table created with fields:
+  - `payment_id` (PK, UUID)
+  - `tenant_id` (FK to tenants)
+  - `amount` (NUMERIC(8,2))
+  - `payment_date` (DATE)
+  - `payment_method` (VARCHAR: 'Cash', 'Check', 'Money Order', 'Square', 'Bank Transfer')
+  - `transaction_id` (VARCHAR, for Square/online payments)
+  - `billing_month` (DATE, tracks which month this payment is for)
+  - `recorded_by` (FK to users, who entered this payment)
+  - `notes` (TEXT, optional)
+  - `created_at` (TIMESTAMP)
+- Foreign keys properly reference tenants and users tables
+- Indexes added on `tenant_id`, `billing_month`, `payment_date`
+- Migration script is reversible (has rollback)
+
+**Story 3.3.2: Manual Payment Recording**
+
+As a housing manager, I need to record rent payments that I receive in cash, check, or money order so that tenant accounts reflect their current payment status.
+
+Acceptance Criteria:
+- Payment recording form accessible from tenant detail page
+- Form fields: amount, payment date, payment method, billing month, notes
+- Shows tenant's current rent amount and outstanding balance before recording
+- Shows recent payment history (last 3 months) to prevent duplicate entries
+- Confirmation dialog: "Record $[amount] payment for [tenant] for [month]?"
+- Success message displays after recording
+- Payment immediately appears in tenant's payment history
+- API endpoint: `POST /api/payments` with validation
+
+**Story 3.3.3: Payment History View**
+
+As a housing manager, I want to view a tenant's complete payment history so I can verify past payments and resolve disputes.
+
+Acceptance Criteria:
+- Payment history table on tenant detail page
+- Columns: Date, Amount, Method, Billing Month, Recorded By, Notes
+- Sortable by date (newest first by default)
+- Filterable by billing month and payment method
+- Shows running balance calculation
+- Export to CSV button for individual tenant
+- Pagination if more than 50 payments
+
+**Story 3.3.4: Monthly Billing Cycle Automation**
+
+As a developer, I need to implement an automated monthly job that resets rent payment status so that the system accurately reflects the new billing cycle.
+
+Acceptance Criteria:
+- Scheduled function runs on 1st of each month at 12:01 AM
+- For each active tenant:
+  - Calculate outstanding balance from payment ledger
+  - Handle pro-rated rent for mid-month move-ins (if move-in date > 15th of month)
+- Job logs execution results (success/failure, tenants processed)
+- Manual trigger endpoint for testing: `POST /api/admin/billing-cycle/reset`
+- Email notification to admin if job fails
+- Idempotent (safe to run multiple times)
+
+**Story 3.3.5: Dashboard Payment Status Indicators**
+
+As a housing manager, I need to see at-a-glance which tenants have paid rent this month so that I can follow up on unpaid accounts.
+
+Acceptance Criteria:
+- Dashboard shows payment status summary card:
+  - "X of Y tenants paid this month"
+  - Total collected this month: $X,XXX
+  - Outstanding: $X,XXX
+- Tenant list has payment status column with visual indicators:
+  - Green "Paid" badge
+  - Yellow "Partial" badge (if payment < rent due)
+  - Red "Unpaid" badge
+  - Red "Late" badge (if unpaid after 5th of month)
+- Click badge to view payment details
+- Filter tenant list by payment status
+
+**Story 3.3.6: Payment Export & Reporting**
+
+As a housing manager, I need to export payment data to Excel/CSV so that I can reconcile accounts with my bookkeeper and Square reports.
+
+Acceptance Criteria:
+- "Export Payments" button on payments page
+- Export options:
+  - Date range selector
+  - Filter by property/house
+  - Filter by payment method
+  - Filter by tenant
+- CSV includes: Payment Date, Tenant Name, Property, Amount, Method, Billing Month, Transaction ID, Notes
+- Filename format: `payments_YYYY-MM-DD_to_YYYY-MM-DD.csv`
+- Export completes in <5 seconds for 1000 records
+
+**Overall Epic Acceptance Criteria**:
+
+- `payment_ledger` table operational with proper relationships
+- Managers can manually record all payment types
+- Payment history viewable per tenant with full transaction details
+- Automated monthly billing cycle with pro-rating support
+- Dashboard displays current month payment status
+- Payment data exportable to CSV for accounting reconciliation
+- All payments recorded with audit trail (who, when, why)
+
+---
+
+#### Epic 3.4: Online Payment Integration (Square) (Post-MVP)
+
+**Description**: Integrate Square payment processing to allow tenants to pay rent online via credit/debit card. Provide secure payment forms, webhook handling for automatic payment recording, receipt generation, and refund processing.
+
+**Dependencies**:
+- Requires Epic 3.3 (Payment Ledger) to be complete
+- Requires client's Square developer credentials and business account setup
+
+**User Stories**:
+
+**Story 3.4.1: Square SDK Integration**
+
+As a developer, I need to integrate Square's payment SDK into the application so that we can securely process online payments.
+
+Acceptance Criteria:
+- Square Node.js SDK installed and configured
+- Square Web Payments SDK integrated in React frontend
+- Environment variables for Square credentials (Application ID, Access Token, Location ID)
+- Sandbox environment configured for testing
+- Payment tokenization implemented (never store card details)
+
+**Story 3.4.2: Tenant Payment Portal UI**
+
+As a tenant, I want to pay my rent online using a credit or debit card so that I don't need to use cash or checks.
+
+Acceptance Criteria:
+- Secure payment form accessible from tenant portal
+- Shows current rent due and billing month
+- Square payment form component (handles card input securely)
+- Payment confirmation screen with transaction ID
+- Mobile-responsive design
+- "Pay Rent" button disabled after successful payment (prevent duplicates)
+
+**Story 3.4.3: Payment Webhook Handling**
+
+As a developer, I need to handle Square payment webhooks so that successful payments are automatically recorded in the payment ledger.
+
+Acceptance Criteria:
+- Webhook endpoint: `POST /api/webhooks/square`
+- Webhook signature verification (security)
+- Automatic payment ledger entry on successful payment
+- Tenant notification email sent on success
+- Manager notification email sent on success
+- Failed webhook attempts logged for debugging
+
+**Story 3.4.4: Receipt Generation & Email**
+
+As a tenant, I want to receive a receipt after paying rent online so that I have proof of payment.
+
+Acceptance Criteria:
+- PDF receipt generated with:
+  - Payment date, amount, method
+  - Tenant name, property address
+  - Transaction ID
+  - "Paid in full" or remaining balance
+- Email sent to tenant with PDF attachment
+- Receipt also accessible in tenant payment history
+- Receipts stored in Supabase Storage
+
+**Story 3.4.5: Payment Failure Handling**
+
+As a housing manager, I need to be notified when online payments fail so that I can follow up with tenants.
+
+Acceptance Criteria:
+- Failed payments logged in database
+- Tenant sees user-friendly error message (not technical details)
+- Manager receives email notification of failed payment
+- Tenant can retry payment immediately
+- Common failure reasons displayed (insufficient funds, card declined, etc.)
+
+**Story 3.4.6: Refund Processing**
+
+As a housing manager, I need to process refunds for overpayments or tenant disputes so that I can maintain accurate accounting.
+
+Acceptance Criteria:
+- Refund button on payment detail page (manager only)
+- Refund confirmation dialog with reason field
+- Square refund API integration
+- Negative payment entry in ledger (audit trail)
+- Email sent to tenant confirming refund
+- Manager notes field for documenting refund reason
+
+**Overall Epic Acceptance Criteria**:
+
+- Tenants can pay rent online securely via Square
+- Payments automatically recorded in payment ledger
+- Receipts generated and emailed to tenants
+- Manager notified of all payment activity
+- Refunds processable by manager
+- All transactions logged with full audit trail
+- Integration uses client's existing Square account
+
+**Technical Notes**:
+- Client already uses Square for business operations (account setup complete)
+- Square transaction fees: ~2.9% + $0.30 per transaction
+- PCI compliance handled by Square (we never store card numbers)
+- Webhook security critical (verify all webhook signatures)
+
+**Open Questions for Client**:
+- Do you want to enable ACH/bank transfer payments in addition to cards?
+- Should tenants be able to set up recurring/automatic payments?
+- What should the payment deadline be each month (5th? 10th?)
 
 ---
 
@@ -484,7 +680,8 @@ _Ensure proper authentication and data protection_
 
 **Target**: TBD based on feedback and funding
 
-- Epic 3.3: Rental History & Ledger
+- Epic 3.3: Rental History & Ledger (payment tracking infrastructure)
+- Epic 3.4: Online Payment Integration (Square)
 - Epic 4.3: AI-Assisted Document Generation
 - Epic 6.1: Advanced Bed Management ("Batter's Box")
 - Epic 6.2: Compliance & House Rules (gender restrictions)
@@ -555,6 +752,89 @@ _Ensure proper authentication and data protection_
 
 ---
 
+### Payment Tracking Schema (Post-MVP - Epic 3.3)
+
+#### Table: payment_ledger
+
+This table maintains a complete transaction history for all rent payments. It serves as the single source of truth for financial records and enables auditing, reporting, and accounting reconciliation.
+
+**Fields**:
+
+- **payment_id** (UUID, Primary Key): Unique identifier for each payment transaction
+- **tenant_id** (UUID, Foreign Key → tenants): Which tenant made this payment
+- **amount** (NUMERIC(8,2)): Payment amount in dollars (e.g., 850.00)
+- **payment_date** (DATE): When the payment was received
+- **billing_month** (DATE): Which month this payment is for (e.g., '2025-10-01' for October rent)
+- **payment_method** (VARCHAR(32)): How payment was made
+  - Options: 'Cash', 'Check', 'Money Order', 'Square', 'Bank Transfer'
+- **transaction_id** (VARCHAR(255)): External transaction reference (Square transaction ID, check number, etc.)
+- **recorded_by** (UUID, Foreign Key → users): Which manager/user recorded this payment
+- **notes** (TEXT): Optional notes about this payment (e.g., "Partial payment - rest due by 10th")
+- **created_at** (TIMESTAMP): When this record was created (audit trail)
+- **updated_at** (TIMESTAMP): When this record was last modified
+
+**Indexes for Performance**:
+- `tenant_id, billing_month` (most common query: "Show me all payments for tenant X in month Y")
+- `payment_date DESC` (for recent payment lists)
+- `billing_month` (for monthly reports)
+
+**Key Design Decisions**:
+- Each row represents ONE payment transaction
+- Multiple payments per tenant per month are supported (partial payments)
+- `billing_month` allows for early/late payments (tenant might pay October rent on Sept 28th)
+- Negative amounts represent refunds (for audit trail)
+- Never delete payments - mark as refunded instead
+
+---
+
+#### Pro-Rating Logic (Epic 3.3.4)
+
+**Billing Cycle**: All tenants are normalized to the 1st of the month billing cycle
+
+**Pro-Rating Rule**: If a tenant moves in after the 15th of the month, their first month rent is automatically pro-rated
+
+**Calculation**:
+```
+prorated_rent = (bed.rent_amount / days_in_month) * days_remaining
+```
+
+**Example**:
+- Bed rent: $850/month
+- Move-in date: October 20th (12 days remaining in October)
+- October has 31 days
+- Pro-rated rent: ($850 / 31) × 12 = $329.03
+
+**Implementation Notes**:
+- Pro-rating calculated automatically by monthly billing cycle job
+- First payment due date set based on move-in date
+- Subsequent months always due on 1st
+- Manager can override pro-rated amount if needed (manual adjustment)
+
+---
+
+#### Voucher Payment Handling (TBD - Pending Client Input)
+
+**Current Understanding**:
+- Vouchers are paid on the tenant's behalf (not paid directly by tenant)
+- May be paid by housing authority, DOC, or TeleCare program
+- Amount may differ from bed's base rent (e.g., voucher pays $700 but bed is worth $850)
+
+**Questions for Client** (to be answered during Epic 3.3 implementation):
+1. How do you receive voucher payments? (Direct deposit, check, etc.)
+2. What documentation do you need for voucher tracking?
+3. Are vouchers always the same amount ($700), or does it vary by program?
+4. Who records voucher payments in the system? (Manager or automatic?)
+5. How do you handle the gap when voucher < bed rent? (Tenant pays difference? Accepted loss?)
+
+**Proposed Schema** (subject to change based on client feedback):
+- Track voucher payments same as other payments in `payment_ledger`
+- `payment_method` = 'Voucher' (or 'Housing Authority', 'DOC', 'TeleCare')
+- `notes` field documents voucher program and any special handling
+- `actual_rent` field on tenant (already in Epic 3.1) shows what's actually collected
+- Gap between `bed.rent_amount` and `tenant.actual_rent` shows revenue variance
+
+---
+
 ## 7. Technical Constraints & Considerations
 
 - **Mobile-First**: Intake form must work on smartphones (primary use case for tenants)
@@ -610,6 +890,21 @@ _Ensure proper authentication and data protection_
 8. What is the current voucher rate? Does it change frequently?
 9. How far in advance do you know about ERD releases?
 10. Do you need to track multiple contact types (emergency contacts, case managers, etc.)?
+
+**Payment & Financial Questions** (for Epic 3.3 & 3.4 implementation):
+
+11. How do you receive voucher payments? (Direct deposit, check, housing authority portal?)
+12. What documentation do you need to track for voucher payments? (invoices, receipts, etc.)
+13. Are vouchers always the same amount ($700), or does it vary by program/tenant?
+14. Who should record voucher payments in the system? (Manager manually, or automatic?)
+15. When voucher amount < bed rent, how do you handle the gap? (Tenant pays difference? Revenue loss?)
+16. Do you currently use Square for rent collection, or only for other business payments?
+17. What are your Square account credentials? (Application ID, Location ID, Access Token for integration)
+18. Do you want tenants to be able to pay online via credit/debit card?
+19. Should tenants be able to set up recurring/automatic monthly payments?
+20. What should the payment deadline be each month? (5th? 10th? 15th?)
+21. Do you want to enable ACH/bank transfer payments in addition to credit cards?
+22. How do you want to be notified when payments are received? (Email? SMS? Dashboard only?)
 
 **Risks**:
 
