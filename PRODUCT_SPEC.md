@@ -2,7 +2,7 @@
 
 ## Halfway Housing Dashboard
 
-**Last Updated**: October 17, 2025
+**Last Updated**: October 27, 2025
 **Project Lead**: Michael Munro
 **Status**: Requirements Gathering / Pre-Development
 
@@ -505,11 +505,255 @@ Acceptance Criteria:
 
 ---
 
-### Theme 4: Reporting & Insights
+### Theme 4: Forms & Documentation
+
+_Enable self-service forms for tenants and admin documentation workflows_
+
+#### Epic 4.1: Resident Intake Form (MVP Phase 1)
+
+**Description**: Comprehensive intake form with 10 policy agreement sections, e-signatures, and PDF export for compliance. Tenants complete this form upon move-in to acknowledge house rules and policies.
+
+**User Stories**:
+
+- As a tenant, I want to read and agree to house policies electronically so I can complete intake quickly
+- As a tenant, I want to provide my e-signature for each policy section so I don't need to print and scan documents
+- As a housing manager, I want all policy acknowledgments stored securely so I have compliance records
+- As a housing manager, I want to export signed intake forms to PDF so I can archive them in Google Drive
+- As a housing manager, I want to prevent form submission unless all policies are acknowledged so I ensure compliance
+
+**Acceptance Criteria**:
+
+- 10 policy sections rendered with full text:
+  1. Substance Use Rules
+  2. Recovery Rules
+  3. Guest Rules
+  4. Behavioral Rules
+  5. House Rules
+  6. Safety and Inspection Rules
+  7. Statement of Resident Rights
+  8. Medication Policy
+  9. Good Neighbor Policy
+  10. Payment Policy
+- Each section has checkbox: "I agree to [Policy Name]"
+- Each section has e-signature canvas for initials/signature
+- **Frontend validation**: All 10 checkboxes must be checked before "Submit" button activates
+- **Backend validation**: Reject submission if any `agreed = false`
+- **Error message**: "You must agree to and sign all policy sections before submitting."
+- Creates `form_submission` record with `form_type = 'Intake'`
+- Creates 10 `policy_agreements` records (one per section)
+- Signature data stored as base64 PNG
+- PDF generation with:
+  - Client logo and mission statement (header)
+  - All policy text with ☑ checkboxes
+  - Embedded signature images
+  - Printed name and date
+- PDF uploaded to Google Drive folder: "Housing Dashboard - Signed Agreements"
+- PDF URL stored in `form_submissions.pdf_url`
+- Mobile-responsive (tenants use phones/tablets)
+- Dashboard notification when intake submitted
+
+**Dependencies**:
+- Epic 4.3 (E-Signature Component) must be complete first
+
+**Technical Notes**:
+- Use `react-signature-canvas` for signature capture
+- Use `pdfkit` or `jspdf` for PDF generation
+- Google Drive API for PDF upload (same service account as Sheets)
+- Form cannot be submitted with empty signatures
+
+---
+
+#### Epic 4.2: Application Form - DOC & Private (MVP Phase 1)
+
+**Description**: Comprehensive application form for housing admission, filled out by DOC counselors for inmates or by walk-in applicants. Creates tenant record, extended profile, and emergency contacts.
+
+**User Stories**:
+
+- As a DOC counselor, I want to submit housing applications for inmates electronically so I don't need to fax/email paperwork
+- As a walk-in applicant, I want to fill out a housing application online so I can apply quickly
+- As a housing manager, I want to review applications in a queue so I can approve/deny/waitlist candidates
+- As a housing manager, I want to see applicant details (recovery, legal, employment) so I can make informed decisions
+- As a housing manager, I want to assign approved applicants to available beds so I can manage move-ins
+- As a housing manager, I want to waitlist approved applicants when no beds are available so I don't lose qualified candidates
+
+**Acceptance Criteria**:
+
+**Form Sections**:
+
+1. **General Information**:
+   - First Name (required), Last Name (required)
+   - Phone (optional), Email (optional)
+   - Date of Birth (required)
+   - Most Recent Address (dropdown with WA state prisons + "Other")
+   - Food Allergies (optional)
+   - Employment Status (optional), Employment Details (optional)
+   - Profile Picture Upload (optional)
+
+2. **Recovery Information** (conditional):
+   - Checkbox: "Are you in recovery?" (if NO → hide recovery fields)
+   - Drug of Choice
+   - Substances Previously Used
+   - Recovery Program (dropdown: 12-Step, SMART Recovery, Faith-Based, etc.)
+   - Sober Date
+
+3. **Legal History** (required):
+   - Checkbox: "Are you on probation?" (if YES → show officer fields)
+   - Checkbox: "Are you on parole?" (if YES → show officer fields)
+   - Probation/Parole Officer Name
+   - Probation/Parole Officer Phone
+   - Completion Date
+   - Criminal History (last 5 years) - text area, required (can be "None")
+   - Checkbox: "Are you a Registered Sex Offender?" (required)
+   - If YES → Sex Offense Details (required)
+
+4. **Emergency Contacts** (at least 1 required):
+   - First Name (required), Last Name (required)
+   - Phone (required), Email (optional)
+   - Relationship (required - dropdown: Parent, Sibling, Spouse, Friend, etc.)
+   - Address (optional)
+   - Additional Info (optional)
+   - Checkbox: "Primary Contact"
+   - "+ Add Another Contact" button (support up to 3 contacts)
+
+5. **Veteran Status**:
+   - Checkbox: "Are you a veteran?"
+
+6. **Certification & Signature**:
+   - Text: "I certify that all information provided is true and accurate to the best of my knowledge."
+   - E-Signature canvas
+   - Printed Name
+   - Date (auto-filled)
+
+**Form Behavior**:
+- WA Prison dropdown includes addresses for all WA state prisons (client will provide list)
+- Profile picture upload → Supabase Storage bucket `tenant-profile-pictures`
+- Image resize to 300x300px before upload
+- All signatures validated before submission
+- Creates records in tables: `tenants`, `tenant_profiles`, `emergency_contacts` (1+), `form_submissions`
+- Tenant `application_status` = 'Pending'
+
+**Manager Review Workflow**:
+- Dashboard shows notification: "New Application: [Name]"
+- Manager clicks to view application details
+- Manager actions:
+  - **Approve** → If bed available: Assign bed → Status = 'Active'
+  - **Waitlist** → No bed available but approved → Status = 'Waitlist'
+  - **Deny** → Status = 'Denied', add reason in notes
+  - **Request More Info** → form_submission.status = 'Needs Info', send email/SMS to applicant
+- Waitlist tab shows all waitlisted applicants
+- When bed becomes available → Notification: "Bed Available - Check Waitlist"
+
+**Dual Application + Intake Form** (convenience feature):
+- For in-person admissions, frontend can render both Application + Intake forms together
+- Backend creates two separate `form_submissions` (Application + Intake)
+- Links both to same `tenant_id`
+
+**Dependencies**:
+- Epic 4.3 (E-Signature Component)
+- Supabase Storage setup for profile pictures
+
+---
+
+#### Epic 4.3: E-Signature Component (MVP Phase 1)
+
+**Description**: Reusable React component for capturing electronic signatures and initials using touchscreen or mouse.
+
+**User Stories**:
+
+- As a tenant, I want to sign forms with my finger on a touchscreen so I don't need paper
+- As a tenant, I want to clear and redo my signature if I make a mistake so I can get it right
+- As a developer, I want a reusable signature component so I can use it across multiple forms
+
+**Acceptance Criteria**:
+
+- Install `react-signature-canvas` library
+- Create wrapper component `<SignatureCanvas />`:
+  - Props: `onSave(signatureBase64)`, `label`, `required`, `width`, `height`
+  - Signature pad with drawing canvas
+  - "Clear" button to reset canvas
+  - "Save" button to capture signature
+  - Signature saved as base64 PNG string
+  - Visual indication when signature is captured (green checkmark)
+- Component validates:
+  - Required signatures cannot be empty
+  - Error message: "Signature is required"
+- Signature display component `<SignatureDisplay />`:
+  - Props: `signatureBase64`, `label`
+  - Renders base64 PNG image
+  - Used in admin views to show saved signatures
+- Mobile-responsive (works on phone/tablet screens)
+- Accessible (keyboard navigation, screen reader support)
+
+**Technical Notes**:
+- Library: `react-signature-canvas` (wrapper for signature_pad.js)
+- Output format: Base64 PNG
+- Typical base64 signature size: 5-10 KB
+- Store in database as TEXT field
+
+**Component Usage Example**:
+```jsx
+<SignatureCanvas
+  label="Substance Use Rules - Signature"
+  required={true}
+  onSave={(base64) => setSubstanceSignature(base64)}
+/>
+```
+
+---
+
+#### Epic 4.4: Maintenance, Grievance & Overnight Forms (Post-MVP)
+
+**Description**: Additional self-service forms for tenant requests and manager workflow automation.
+
+**User Stories**:
+
+**Maintenance Requests**:
+- As a tenant, I want to submit maintenance requests online so issues get addressed quickly
+- As a housing manager, I want maintenance requests to create work orders so I can track resolution
+- As a housing manager, I want to mark work orders as "In Progress" or "Resolved" so I manage tasks efficiently
+
+**Grievance Forms**:
+- As a tenant, I want to file formal grievances electronically so I can document concerns
+- As a housing manager, I want to review grievances and add resolution notes so I maintain records
+
+**Overnight Requests**:
+- As a tenant, I want to request overnight passes online so I don't have to track down the manager
+- As a housing manager, I want to approve/deny overnight requests so I enforce house rules
+- As a housing manager, I want tenants notified by email/SMS of approval/denial so they know the decision
+
+**Acceptance Criteria**:
+
+**Maintenance Form**:
+- Fields: First Name, Last Name, House (dropdown), Issue Type (dropdown with subtypes), Location, Description, Previously Submitted (yes/no)
+- Creates `form_submission` with `form_type = 'Maintenance'`
+- Dashboard tab: "Work Orders" with counts (New, In Progress, Resolved)
+- Manager can add notes and update status
+- Notification badge when new maintenance requests submitted
+
+**Grievance Form**:
+- Fields: First Name, Last Name, DOB, Date/Time of Issue, Relates To (dropdown), Details, Proposed Solutions
+- Creates `form_submission` with `form_type = 'Grievance'`
+- Manager reviews, adds notes, marks "Resolved"
+- Simple workflow (no complex approval process)
+
+**Overnight Request Form**:
+- Fields: First Name, Last Name, DOB, Leaving Date/Time, Return Date/Time, Reason, Location, Who You're Seeing
+- Certification: "I certify this request is honest and accurate" + e-signature
+- Creates `form_submission` with `form_type = 'Overnight'`, `status = 'Pending'`
+- Must be submitted at least 1 week in advance (validation)
+- Manager actions: Approve, Deny, Request More Info
+- Email/SMS notification to tenant with decision
+
+**Dependencies**:
+- Epic 4.3 (E-Signature Component) for overnight requests
+
+---
+
+### Theme 5: Reporting & Insights
 
 _Generate reports and enable data-driven decisions_
 
-#### Epic 4.1: Dashboard & Visualization
+#### Epic 5.1: Dashboard & Visualization
 
 **Description**: Provide manager with real-time overview of operations
 
@@ -532,7 +776,7 @@ _Generate reports and enable data-driven decisions_
 
 ---
 
-#### Epic 4.2: Report Generation
+#### Epic 5.2: Report Generation
 
 **Description**: Generate formatted reports with one click
 
@@ -552,7 +796,7 @@ _Generate reports and enable data-driven decisions_
 
 ---
 
-#### Epic 4.3: AI-Assisted Document Generation (Stretch Goal)
+#### Epic 5.3: AI-Assisted Document Generation (Stretch Goal)
 
 **Description**: Use LLM to draft grant proposals and audit documents from data
 
@@ -571,11 +815,62 @@ _Generate reports and enable data-driven decisions_
 
 ---
 
-### Theme 6: Advanced Operations (Post-MVP)
+### Theme 6: Admin Settings & Configuration
+
+_Enable managers to configure system settings and business rules_
+
+#### Epic 6.1: Voucher Rate Management (MVP Phase 1 - HIGH PRIORITY)
+
+**Description**: Admin panel for managing ERD and GRE voucher rates, allowing managers to update amounts as DOC rates change.
+
+**User Stories**:
+
+- As a housing manager, I want to update ERD voucher rates so the system reflects current DOC rates
+- As a housing manager, I want to update GRE voucher rates so the system reflects current DOC rates
+- As a housing manager, I want to see the current active rates so I know what amounts are being used
+- As a housing manager, I want to see rate history so I can audit when rates changed
+
+**Acceptance Criteria**:
+
+- Admin Settings page accessible from main navigation (manager role only)
+- Section: "Voucher Rates"
+- Display current active rates:
+  - ERD: $XXX.XX per month (Last updated: MM/DD/YYYY)
+  - GRE: $XXX.XX per month (Last updated: MM/DD/YYYY)
+- "Update Rate" button for each voucher type
+- Update modal:
+  - Input: New Amount (numeric, 2 decimal places)
+  - Input: Notes (optional - e.g., "Updated per DOC directive")
+  - Confirmation: "Update [ERD/GRE] rate from $XXX to $XXX?"
+- Backend workflow:
+  - Set old rate `is_active = false`
+  - Insert new rate with `amount = [new amount]`, `effective_date = CURRENT_DATE`, `is_active = true`
+  - Historical rates preserved (audit trail)
+- Success message: "Voucher rate updated successfully"
+- Rate history view showing all past rates with effective dates
+- Query for active rates: `SELECT * FROM voucher_rates WHERE is_active = true AND voucher_type = 'ERD'`
+
+**Seed Data on Database Setup**:
+```sql
+INSERT INTO voucher_rates (voucher_type, amount, is_active, notes) VALUES
+  ('ERD', 700.00, true, 'Estimated Release Date - 6 month voucher'),
+  ('GRE', 700.00, true, 'Graduated Re-Entry (Work Release) - 6 month voucher - AMOUNT TBD');
+```
+
+**Open Questions for Client**:
+- What is the current GRE voucher amount? (defaulted to $700 for now)
+- How often do voucher rates change?
+- Who should have permission to update rates? (all managers or owner only?)
+
+**Priority Note**: This epic is HIGH PRIORITY for MVP Phase 1 because voucher rates directly affect financial calculations and must be configurable by the client.
+
+---
+
+### Theme 7: Advanced Operations (Post-MVP)
 
 _Complex operational features for edge cases_
 
-#### Epic 6.1: Advanced Bed Management ("Batter's Box")
+#### Epic 7.1: Advanced Bed Management ("Batter's Box")
 
 **Description**: Handle complex bed reservation scenarios where current occupant will vacate before new tenant arrives
 
@@ -594,7 +889,7 @@ _Complex operational features for edge cases_
 
 ---
 
-#### Epic 6.2: Compliance & House Rules
+#### Epic 7.2: Compliance & House Rules
 
 **Description**: Enforce property-specific rules and constraints (e.g., gender-based housing)
 
@@ -613,11 +908,11 @@ _Complex operational features for edge cases_
 
 ---
 
-### Theme 7: Access Control & Security
+### Theme 8: Access Control & Security
 
 _Ensure proper authentication and data protection_
 
-#### Epic 5.1: Authentication & Authorization
+#### Epic 8.1: Authentication & Authorization
 
 **Description**: Secure login with role-based access control
 
@@ -640,21 +935,36 @@ _Ensure proper authentication and data protection_
 
 ### MVP Phase 1 (Priorities 1 & 2)
 
-**Target**: 4-6 week development sprint
+**Target**: Extended timeline (Nov-Dec 2025) to accommodate new form system
 
+**Core Data & Operations**:
 - Epic 1.1: Property & Bed Management (with county field) ⭐
 - Epic 1.2: Tenant Management ⭐
-- Epic 2.1: Tenant Intake Form with Dynamic Fields ⭐
+- Epic 8.1: Authentication & Authorization (basic) ⭐
+
+**Forms & Intake**:
+- Epic 4.1: Resident Intake Form (10 policy sections + e-signatures) ⭐
+- Epic 4.2: Application Form - DOC & Private (extended profile, emergency contacts) ⭐
+- Epic 4.3: E-Signature Component (react-signature-canvas) ⭐
+
+**Financial & Configuration**:
 - Epic 3.1: Payment & Voucher Management (rent tracking) ⭐
-- Epic 4.1: Dashboard & Visualization (basic + county filter) ⭐
-- Epic 5.1: Authentication & Authorization (basic) ⭐
+- Epic 6.1: Voucher Rate Management (ERD/GRE admin settings) ⭐ **HIGH PRIORITY**
+
+**Dashboard & Visualization**:
+- Epic 5.1: Dashboard & Visualization (basic + county filter, property search) ⭐
 
 **Success Criteria**:
 
 - Manager can perform all CRUD operations
-- Tenants can submit dynamic intake forms (DOC, TeleCare, Private options)
+- Tenants can submit Application form (extended profile, recovery, legal, emergency contacts)
+- Tenants can submit Intake form (10 policy sections with e-signatures, PDF export)
+- Manager can review/approve/deny/waitlist applications
 - Manager sees dashboard with key metrics and county filtering
 - Rent tracking shows base vs actual per bed/tenant
+- Manager can configure ERD/GRE voucher rates via Admin Settings
+- Profile pictures supported via Supabase Storage
+- Google Sheets sync (basic export)
 
 ---
 
@@ -665,7 +975,8 @@ _Ensure proper authentication and data protection_
 - Epic 1.3: Tenant Operations (relocation/transfer) ⭐
 - Epic 2.2: Alerts & Notifications (month-based voucher display) ⭐
 - Epic 3.2: Property Financial Dashboard (revenue tracking) ⭐
-- Epic 4.2: Report Generation ⭐
+- Epic 5.2: Report Generation ⭐
+- Google Sheets advanced sync & export (monthly/property reports)
 
 **Success Criteria**:
 
@@ -673,6 +984,7 @@ _Ensure proper authentication and data protection_
 - Automated alerts for expirations and arrivals (displayed as months)
 - Property financial performance visible (max vs current revenue)
 - One-click reports
+- Advanced Google Sheets integration
 
 ---
 
@@ -682,73 +994,325 @@ _Ensure proper authentication and data protection_
 
 - Epic 3.3: Rental History & Ledger (payment tracking infrastructure)
 - Epic 3.4: Online Payment Integration (Square)
-- Epic 4.3: AI-Assisted Document Generation
-- Epic 6.1: Advanced Bed Management ("Batter's Box")
-- Epic 6.2: Compliance & House Rules (gender restrictions)
-- DOC Stakeholder portal (Epic 5.1 expansion)
+- Epic 4.4: Maintenance, Grievance & Overnight Forms (work orders, approvals)
+- Epic 5.3: AI-Assisted Document Generation
+- Epic 7.1: Advanced Bed Management ("Batter's Box")
+- Epic 7.2: Compliance & House Rules (gender restrictions)
+- DOC Stakeholder portal (Epic 8.1 expansion)
 - Advanced reporting and analytics
 
 ---
 
 ## 6. Data Schema (User-Friendly Version)
 
-### Information We'll Track About Your Properties
+### Core Tables
 
-- **Property Address**: Full street address of the house
-- **County**: Which county the property is in (King, Pierce, etc.)
-- **Total Beds**: How many beds are managed at this property
-- **Manager Notes**: Any comments or special information about the property
+#### Table: houses
 
-### Information We'll Track About Each Bed
+**Purpose**: Tracks halfway house properties and locations
 
-- **Bed/Room Number**: How you identify each bed (e.g., "Room 1A", "Bed 3")
-- **Base Rent**: What this bed is "worth" per month (standard rate)
-- **Current Status**: Available, Occupied, Pending, or On Hold
-- **Current Tenant**: Who's currently assigned (if occupied)
-- **Bed Notes**: Any comments about this specific bed
+**Fields**:
+- **house_id** (UUID, Primary Key): Unique identifier
+- **address** (VARCHAR 255): Full street address
+- **county** (VARCHAR 64): County location (King, Pierce, etc.)
+- **total_beds** (INT): Total number of beds in this property
+- **notes** (TEXT): Optional manager notes about the property
+- **created_at** (TIMESTAMP): Record creation timestamp
+- **updated_at** (TIMESTAMP): Last modification timestamp
 
-### Information We'll Track About Your Tenants
+---
 
-**Personal Information**:
+#### Table: beds
 
-- Full Name
-- Date of Birth
-- Phone Number
-- Gender (optional - for house compliance)
+**Purpose**: Tracks individual bed availability and assignments
 
-**Tenant Type** (can be multiple):
+**Fields**:
+- **bed_id** (UUID, Primary Key): Unique identifier
+- **house_id** (UUID, Foreign Key → houses): Which property this bed belongs to
+- **room_number** (VARCHAR 32): Room identifier (e.g., "Room 2A", "Bed 3")
+- **status** (VARCHAR 16): Current status - CHECK constraint: 'Available', 'Occupied', 'Pending', 'Hold'
+- **rent_amount** (NUMERIC 8,2): Monthly rent for this bed (e.g., 850.00)
+- **tenant_id** (UUID, Foreign Key → tenants, NULLABLE): Currently assigned tenant
+- **notes** (TEXT): Optional notes about this specific bed
+- **created_at** (TIMESTAMP): Record creation timestamp
+- **updated_at** (TIMESTAMP): Last modification timestamp
 
-- DOC (Department of Corrections)
-- TeleCare Program
-- Private Citizen
+**Indexes**:
+- `idx_beds_house` on `house_id`
+- `idx_beds_status` on `status`
+- `idx_beds_tenant` on `tenant_id`
 
-**Housing Information**:
+**Why rent lives in beds table**: Rent is a property of the bed/room, not the tenant. Different beds in the same house may have different rates. Voucher tenants may pay less than the bed's full rent value, which is tracked separately in the tenant record.
 
-- Move-in Date
-- Move-out Date (when they leave)
-- Which Bed They're Assigned To
-- Is ERD (pending release from prison)
-- Estimated Release Date (if ERD)
+---
 
-**Agency Information**:
+#### Table: tenants
 
-- DOC Number (if applicable)
-- TeleCare ID (if applicable)
-- Assigned CCO (Community Corrections Officer) - Name and Number
+**Purpose**: Stores resident information and housing assignments
 
-**Payment Information**:
+**Fields**:
 
-- Payment Type (Private Pay, Voucher, TeleCare, Section 8, ERD, Family Support)
-- Actual Rent Collected (may differ from bed's base rent for vouchers)
-- Voucher Start Date
-- Voucher End Date
-- Monthly Rent Due
-- Total Rent Paid
-- Outstanding Balance
+**Core Identity**:
+- **tenant_id** (UUID, Primary Key): Unique identifier
+- **full_name** (VARCHAR 255, REQUIRED): Tenant's full name
+- **dob** (DATE, REQUIRED): Date of birth
+- **phone** (VARCHAR 32, NULLABLE): Phone number (optional - inmates may not have phones initially)
+- **email** (VARCHAR 255, NULLABLE): Email address (optional)
+- **address** (VARCHAR 255, NULLABLE): Most recent address
+- **profile_picture_url** (TEXT, NULLABLE): URL to profile picture in Supabase Storage
+- **application_status** (VARCHAR 32): Application pipeline status
+  - CHECK constraint: 'Pending', 'Approved', 'Waitlist', 'Denied', 'Active', 'Exited'
+  - **Pending**: Application submitted, awaiting manager review
+  - **Approved**: Approved with bed available, ready to move in
+  - **Waitlist**: Approved but no bed available (backlog for future placement)
+  - **Denied**: Application rejected
+  - **Active**: Currently residing in a bed
+  - **Exited**: Former resident, moved out
 
-**Manager Notes**:
+**Housing Assignment**:
+- **bed_id** (UUID, Foreign Key → beds, NULLABLE): Currently assigned bed
+- **entry_date** (DATE): Move-in date
+- **exit_date** (DATE, NULLABLE): Move-out date
 
-- Any comments or special information about the tenant
+**Agency/Program Information**:
+- **doc_number** (VARCHAR 64): DOC/agency reference number
+- **tenant_type** (VARCHAR 64): Program affiliation (e.g., 'DOC', 'TeleCare', 'Private')
+- **voucher_type** (VARCHAR 8, NULLABLE): Voucher program type ('ERD', 'GRE', or NULL)
+
+**Payment/Financial**:
+- **payment_type** (VARCHAR 32): Payment source (e.g., 'Private', 'Voucher', 'TeleCare')
+- **voucher_start** (DATE, NULLABLE): Voucher coverage start date
+- **voucher_end** (DATE, NULLABLE): Voucher coverage end date
+- **rent_paid** (BOOLEAN): Has rent been paid this month?
+
+**Metadata**:
+- **notes** (TEXT): Manager notes about this tenant
+- **created_at** (TIMESTAMP): Record creation timestamp
+- **updated_at** (TIMESTAMP): Last modification timestamp
+
+**Indexes**:
+- `idx_tenants_application_status` on `application_status`
+- `idx_tenants_full_name` on `full_name`
+- `idx_tenants_bed` on `bed_id`
+
+---
+
+#### Table: tenant_profiles
+
+**Purpose**: Extended tenant information from Application form (1:1 relationship with tenants)
+
+**Fields**:
+- **profile_id** (UUID, Primary Key): Unique identifier
+- **tenant_id** (UUID, Foreign Key → tenants, UNIQUE): Link to tenant record
+
+**Employment**:
+- **food_allergies** (TEXT, NULLABLE): Food allergy information
+- **employment_status** (VARCHAR 32, NULLABLE): Employment status ('Employed', 'Unemployed', 'Student', 'Seeking')
+- **employment_details** (TEXT, NULLABLE): Employment details (employer, position, etc.)
+
+**Recovery Information** (conditional - only if `is_in_recovery = true`):
+- **is_in_recovery** (BOOLEAN, DEFAULT false): Is tenant in recovery program?
+- **drug_of_choice** (VARCHAR 64, NULLABLE): Primary substance
+- **substances_previously_used** (TEXT, NULLABLE): History of substance use
+- **recovery_program** (VARCHAR 64, NULLABLE): Program type (12-Step, SMART Recovery, etc.)
+- **sober_date** (DATE, NULLABLE): Sobriety start date
+
+**Legal Information** (conditional - only if probation/parole = true):
+- **is_on_probation** (BOOLEAN, DEFAULT false): Currently on probation?
+- **is_on_parole** (BOOLEAN, DEFAULT false): Currently on parole?
+- **probation_parole_officer_name** (VARCHAR 128, NULLABLE): Officer name
+- **probation_parole_officer_phone** (VARCHAR 32, NULLABLE): Officer contact number
+- **probation_parole_completion_date** (DATE, NULLABLE): Supervision end date
+- **criminal_history** (TEXT, NULLABLE): Description of criminal history (last 5 years)
+- **is_registered_sex_offender** (BOOLEAN, DEFAULT false): Sex offender registry status
+- **sex_offense_details** (TEXT, NULLABLE): Required if `is_registered_sex_offender = true`
+
+**Veteran Status**:
+- **is_veteran** (BOOLEAN, DEFAULT false): Military veteran status
+
+**Metadata**:
+- **created_at** (TIMESTAMP): Record creation timestamp
+- **updated_at** (TIMESTAMP): Last modification timestamp
+
+**Index**:
+- `idx_tenant_profiles_tenant` on `tenant_id` (UNIQUE)
+
+**Frontend Logic**: Conditional fields only appear in Application form if boolean is true:
+- If `is_in_recovery = true` → Show recovery-related fields
+- If `is_on_probation = true` OR `is_on_parole = true` → Show legal/officer fields
+- If `is_registered_sex_offender = true` → Require `sex_offense_details`
+
+---
+
+#### Table: emergency_contacts
+
+**Purpose**: Emergency contact information for tenants (at least 1 required per tenant)
+
+**Fields**:
+- **contact_id** (UUID, Primary Key): Unique identifier
+- **tenant_id** (UUID, Foreign Key → tenants): Which tenant this contact belongs to
+- **first_name** (VARCHAR 64, REQUIRED): Contact's first name
+- **last_name** (VARCHAR 64, REQUIRED): Contact's last name
+- **phone** (VARCHAR 32, REQUIRED): Contact phone number
+- **email** (VARCHAR 255, NULLABLE): Contact email (optional)
+- **relationship** (VARCHAR 64, REQUIRED): Relationship to tenant (Parent, Sibling, Friend, Spouse, etc.)
+- **address** (VARCHAR 255, NULLABLE): Contact's address
+- **additional_info** (TEXT, NULLABLE): Additional notes about this contact
+- **is_primary** (BOOLEAN, DEFAULT false): Is this the primary emergency contact?
+- **created_at** (TIMESTAMP): Record creation timestamp
+- **updated_at** (TIMESTAMP): Last modification timestamp
+
+**Index**:
+- `idx_emergency_contacts_tenant` on `tenant_id`
+
+**Business Rule**: At least 1 emergency contact is required per tenant (enforced at application layer)
+
+---
+
+#### Table: form_submissions
+
+**Purpose**: Stores all form submissions (Application, Intake, Maintenance, Grievance, Overnight) as JSONB for flexibility
+
+**Fields**:
+- **submission_id** (UUID, Primary Key): Unique identifier
+- **tenant_id** (UUID, Foreign Key → tenants): Which tenant submitted this form
+- **form_type** (VARCHAR 32, REQUIRED): Type of form - CHECK constraint: 'Application', 'Intake', 'Maintenance', 'Grievance', 'Overnight'
+- **form_data** (JSONB, REQUIRED): Complete form contents stored as JSON
+- **status** (VARCHAR 32, DEFAULT 'Pending'): Processing status - CHECK constraint: 'Pending', 'Approved', 'Denied', 'Resolved', 'Needs Info', 'Waitlist'
+- **pdf_url** (TEXT, NULLABLE): URL to exported PDF (for Intake forms with signatures, stored in Google Drive)
+- **submitted_at** (TIMESTAMP, DEFAULT NOW()): When form was submitted
+- **submitted_by** (UUID, Foreign Key → users, NULLABLE): Who submitted (NULL for tenant self-submissions)
+- **reviewed_by** (UUID, Foreign Key → users, NULLABLE): Which manager reviewed this submission
+- **reviewed_at** (TIMESTAMP, NULLABLE): When review occurred
+- **review_notes** (TEXT, NULLABLE): Manager notes about review/decision
+- **created_at** (TIMESTAMP): Record creation timestamp
+- **updated_at** (TIMESTAMP): Last modification timestamp
+
+**Indexes**:
+- `idx_form_submissions_tenant` on `tenant_id`
+- `idx_form_submissions_type_status` on `form_type, status`
+- Partial index: `idx_form_submissions_pending` on `status, submitted_at DESC` WHERE `status IN ('Pending', 'Needs Info')`
+
+**JSON Schema Examples**:
+
+**Application form_data**:
+```json
+{
+  "personal": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "phone": "206-555-0100",
+    "email": "john.doe@example.com",
+    "dob": "1990-05-15",
+    "most_recent_address": "Washington State Penitentiary - 1313 N 13th Ave, Walla Walla, WA 99362",
+    "food_allergies": "Peanuts, shellfish"
+  },
+  "recovery": {
+    "is_in_recovery": true,
+    "drug_of_choice": "Opioids",
+    "recovery_program": "12-Step (AA/NA)",
+    "sober_date": "2023-06-01"
+  },
+  "legal": {
+    "is_on_probation": false,
+    "is_on_parole": true,
+    "officer_name": "Jane Smith",
+    "officer_phone": "360-555-0200",
+    "completion_date": "2026-12-31",
+    "criminal_history": "Drug possession (2020), Burglary (2018)",
+    "is_registered_sex_offender": false
+  },
+  "veteran_status": false
+}
+```
+
+**Intake form_data**:
+```json
+{
+  "resident_info": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "dob": "1990-05-15"
+  },
+  "policies_acknowledged": true,
+  "all_signatures_collected": true
+}
+```
+
+**Maintenance form_data**:
+```json
+{
+  "first_name": "John",
+  "last_name": "Doe",
+  "house_address": "123 Main St",
+  "issue_type": "Plumbing",
+  "issue_subtype": "Leaky faucet",
+  "location": "Kitchen, sink area",
+  "description": "Kitchen faucet dripping constantly, wasting water",
+  "previously_submitted": false
+}
+```
+
+---
+
+#### Table: policy_agreements
+
+**Purpose**: Tracks Intake form policy section acknowledgments and e-signatures
+
+**Fields**:
+- **agreement_id** (UUID, Primary Key): Unique identifier
+- **tenant_id** (UUID, Foreign Key → tenants): Which tenant agreed to this policy
+- **form_submission_id** (UUID, Foreign Key → form_submissions): Link to Intake form submission
+- **policy_section** (VARCHAR 32, REQUIRED): Which policy section - CHECK constraint: 'Substance Use', 'Recovery', 'Guest', 'Behavioral', 'House', 'Safety', 'Rights', 'Medications', 'Neighbors', 'Payments'
+- **agreed** (BOOLEAN, REQUIRED): Did tenant check the agreement box? (Must be TRUE to submit form)
+- **signature_data** (TEXT, NULLABLE): Base64-encoded signature/initials image (PNG)
+- **signed_at** (TIMESTAMP, DEFAULT NOW()): When signature was captured
+- **created_at** (TIMESTAMP): Record creation timestamp
+
+**Index**:
+- `idx_policy_agreements_submission` on `form_submission_id`
+
+**Business Rule**: All 10 policy sections must have `agreed = TRUE` before Intake form can be submitted (enforced at frontend AND backend)
+
+**E-Signature Format**: Stored as base64-encoded PNG image generated by react-signature-canvas library
+
+---
+
+#### Table: voucher_rates
+
+**Purpose**: Admin-configurable voucher rates for ERD and GRE programs
+
+**Fields**:
+- **rate_id** (UUID, Primary Key): Unique identifier
+- **voucher_type** (VARCHAR 8, REQUIRED): Voucher program type - CHECK constraint: 'ERD', 'GRE'
+- **amount** (NUMERIC 8,2, REQUIRED): Monthly voucher amount (e.g., 700.00)
+- **effective_date** (DATE, DEFAULT CURRENT_DATE): When this rate became effective
+- **is_active** (BOOLEAN, DEFAULT true): Is this the current active rate?
+- **notes** (TEXT, NULLABLE): Notes about this rate (e.g., "Updated per DOC directive")
+- **created_at** (TIMESTAMP): Record creation timestamp
+- **updated_at** (TIMESTAMP): Last modification timestamp
+
+**Indexes**:
+- `idx_voucher_rates_active` on `voucher_type, is_active` WHERE `is_active = true`
+
+**Seed Data**:
+```sql
+INSERT INTO voucher_rates (voucher_type, amount, is_active, notes) VALUES
+  ('ERD', 700.00, true, 'Estimated Release Date - 6 month voucher'),
+  ('GRE', 700.00, true, 'Graduated Re-Entry (Work Release) - 6 month voucher - AMOUNT TBD');
+```
+
+**Admin Update Workflow**:
+1. Manager updates voucher rate in Admin Settings page
+2. Backend sets old rate `is_active = false`
+3. Backend inserts new rate with new `amount` and `effective_date = CURRENT_DATE`, `is_active = true`
+4. Historical rates preserved for audit trail
+
+**Voucher Types**:
+- **ERD** (Estimated Release Date): For inmates releasing directly from prison with 6-month housing voucher
+- **GRE** (Graduated Re-Entry / Work Release): For inmates in early release work programs with 6-month housing voucher
+
+**Note**: Client currently uses $700/month for ERD. GRE amount is TBD - currently defaulted to $700 but needs client confirmation.
 
 ---
 
@@ -878,33 +1442,51 @@ prorated_rent = (bed.rent_amount / days_in_month) * days_remaining
 
 ## 10. Open Questions & Risks
 
-**Questions for Manager**:
+**General Operations**:
 
 1. How many properties do you currently manage? (determines scale)
 2. What counties are your properties in? Do you plan to expand to other counties?
 3. What percentage of tenants are DOC vs TeleCare vs Private?
-4. What reports do you generate most frequently? (prioritize for Epic 4.2)
+4. What reports do you generate most frequently? (prioritize for Epic 5.2)
 5. How do you currently receive notice of new tenant assignments from DOC?
 6. How often do you need to relocate tenants between properties?
 7. Do any of your houses have gender restrictions or other special rules?
-8. What is the current voucher rate? Does it change frequently?
-9. How far in advance do you know about ERD releases?
-10. Do you need to track multiple contact types (emergency contacts, case managers, etc.)?
+8. How far in advance do you know about ERD releases?
+9. Do you need to track multiple contact types (emergency contacts, case managers, etc.)?
+
+**Form System & Application Workflow** (for Epic 4.1, 4.2 implementation):
+
+10. Can you provide a complete list of WA state prison addresses for the "Most Recent Address" dropdown?
+11. What is the current GRE (Graduated Re-Entry) voucher amount? (ERD is confirmed as $700/month)
+12. How often do voucher rates change? (determines update frequency expectations)
+13. Who should have permission to update voucher rates? (all managers or owner only?)
+14. Are there any specific requirements for profile pictures? (resolution, file format, background?)
+15. For the Intake Form v1 vs v2 - are there any meaningful differences we should preserve, or should we use v1 as the canonical version?
+16. Do you want to store logo and mission statement in the database, or hard-code them into the application?
+17. Should the system auto-calculate voucher end dates based on move-in date (6 months), or manual entry?
 
 **Payment & Financial Questions** (for Epic 3.3 & 3.4 implementation):
 
-11. How do you receive voucher payments? (Direct deposit, check, housing authority portal?)
-12. What documentation do you need to track for voucher payments? (invoices, receipts, etc.)
-13. Are vouchers always the same amount ($700), or does it vary by program/tenant?
-14. Who should record voucher payments in the system? (Manager manually, or automatic?)
-15. When voucher amount < bed rent, how do you handle the gap? (Tenant pays difference? Revenue loss?)
-16. Do you currently use Square for rent collection, or only for other business payments?
-17. What are your Square account credentials? (Application ID, Location ID, Access Token for integration)
-18. Do you want tenants to be able to pay online via credit/debit card?
-19. Should tenants be able to set up recurring/automatic monthly payments?
-20. What should the payment deadline be each month? (5th? 10th? 15th?)
-21. Do you want to enable ACH/bank transfer payments in addition to credit cards?
-22. How do you want to be notified when payments are received? (Email? SMS? Dashboard only?)
+18. How do you receive voucher payments? (Direct deposit, check, housing authority portal?)
+19. What documentation do you need to track for voucher payments? (invoices, receipts, etc.)
+20. Are vouchers always the same amount per program type, or does it vary by tenant?
+21. Who should record voucher payments in the system? (Manager manually, or automatic?)
+22. When voucher amount < bed rent, how do you handle the gap? (Tenant pays difference? Revenue loss?)
+23. Do you currently use Square for rent collection, or only for other business payments?
+24. What are your Square account credentials? (Application ID, Location ID, Access Token for integration)
+25. Do you want tenants to be able to pay online via credit/debit card?
+26. Should tenants be able to set up recurring/automatic monthly payments?
+27. What should the payment deadline be each month? (5th? 10th? 15th?)
+28. Do you want to enable ACH/bank transfer payments in addition to credit cards?
+29. How do you want to be notified when payments are received? (Email? SMS? Dashboard only?)
+
+**Form Workflows** (for Epic 4.4 - Post-MVP):
+
+30. Do you have regular contractors for maintenance, or do you handle repairs yourself?
+31. For overnight requests: How far in advance must they be submitted? (assuming 1 week per house rules)
+32. For overnight requests: Should tenants be notified by email, SMS, or both?
+33. How long should old form submissions be retained? (grievances, maintenance, overnight requests)
+34. Should maintenance requests auto-assign to specific contractors, or all go to manager for manual assignment?
 
 **Risks**:
 

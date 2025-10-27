@@ -191,6 +191,11 @@ CREATE TABLE tenants (
 - [ ] Create sprint milestones
 - [ ] Add user stories as issues to GitLab
 - [ ] Set up labels (Epic, Story, Task, Bug, etc.)
+- [ ] Deploy to Vercel for continuous client feedback (see `docs/deployment/vercel-setup.md`)
+  - [ ] Create Vercel account and link GitHub
+  - [ ] Configure environment variables (Supabase, Google Sheets)
+  - [ ] Enable preview deployments for all branches
+  - [ ] Share production and preview URLs with client
 
 #### Technical Planning
 - [ ] Set up Supabase project and database

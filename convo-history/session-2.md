@@ -1328,111 +1328,130 @@ As for the Epic/Theme -- go ahead and check the `project-roadmap.md` file to see
 
 ### Claude
 
-Plan: Expand Payment Tracking Documentation (Post-MVP) │ │
-│ │ │ │
-│ │ What I'll Update │ │
-│ │ │ │
-│ │ 1. Expand Epic 3.3: Rental History & Ledger (Post-MVP) │ │
-│ │ │ │
-│ │ Current state: Epic 3.3 exists but only has 4 basic user storiesNew state: Comprehensive payment ledger infrastructure with 6 detailed user stories │ │
-│ │ │ │
-│ │ New User Stories: │ │
-│ │ - Story 3.3.1: Payment Ledger Schema Implementation │ │
-│ │ - Story 3.3.2: Manual Payment Recording UI │ │
-│ │ - Story 3.3.3: Payment History View per Tenant │ │
-│ │ - Story 3.3.4: Monthly Billing Cycle Automation │ │
-│ │ - Story 3.3.5: Dashboard Payment Status Indicators │ │
-│ │ - Story 3.3.6: Payment Export & Reporting │ │
-│ │ │ │
-│ │ Updated Acceptance Criteria: │ │
-│ │ - payment_ledger table with full transaction history │ │
-│ │ - Manual payment recording form │ │
-│ │ - Automated monthly reset job │ │
-│ │ - Payment status visualization │ │
-│ │ - CSV export for accounting reconciliation │ │
-│ │ │ │
-│ │ --- │ │
-│ │ 2. Add New Epic 3.4: Online Payment Integration (Square) (Post-MVP) │ │
-│ │ │ │
-│ │ New epic under Theme 3: Financial Tracking │ │
-│ │ │ │
-│ │ Description: Integrate Square payment processing to allow tenants to pay rent online │ │
-│ │ │ │
-│ │ User Stories: │ │
-│ │ - Story 3.4.1: Square SDK Integration (backend + frontend) │ │
-│ │ - Story 3.4.2: Tenant Payment Portal UI │ │
-│ │ - Story 3.4.3: Payment Webhook Handling (auto-record payments) │ │
-│ │ - Story 3.4.4: Receipt Generation & Email │ │
-│ │ - Story 3.4.5: Payment Failure Handling │ │
-│ │ - Story 3.4.6: Refund Processing │ │
-│ │ │ │
-│ │ Dependencies: Requires Epic 3.3 complete (ledger infrastructure) │ │
-│ │ │ │
-│ │ --- │ │
-│ │ 3. Update Section 6: Data Schema │ │
-│ │ │ │
-│ │ Add new subsection: "Payment Tracking (Post-MVP)" │ │
-│ │ │ │
-│ │ Updates: │ │
-│ │ - Add payment_ledger table schema │ │
-│ │ - Update tenants table to include: │ │
-│ │ - rent_due_by DATE field (based on move-in date for pro-rating) │ │
-│ │ - Remove redundant payment fields │ │
-│ │ - Update beds table to confirm rent_amount field (already mentioned) │ │
-│ │ - Add notes about pro-rating logic │ │
-│ │ - Add placeholder for voucher handling (pending client input) │ │
-│ │ │ │
-│ │ Pro-rating Logic to Document: │ │
-│ │ - All tenants normalized to 1st of month billing cycle │ │
-│ │ - If move-in date > 15th of month, automatically calculate pro-rated first month rent │ │
-│ │ - Formula: prorated_rent = (rent_amount / days_in_month) \* days_remaining │ │
-│ │ │ │
-│ │ Voucher Handling Note: │ │
-│ │ - "Vouchers are paid on tenant's behalf - need client input on workflow (Epic 3.3 implementation)" │ │
-│ │ │ │
-│ │ --- │ │
-│ │ 4. Update Section 10: Open Questions │ │
-│ │ │ │
-│ │ Add new questions for client: │ │
-│ │ - "How do voucher payments work? Are they paid directly to you or to the tenant?" │ │
-│ │ - "What documentation do you need for voucher payment tracking?" │ │
-│ │ - "Do you currently use Square for rent collection, or only for other payments?" │ │
-│ │ │ │
-│ │ --- │ │
-│ │ Files to Modify │ │
-│ │ │ │
-│ │ 1. PRODUCT_SPEC.md │ │
-│ │ - Lines 292-310: Expand Epic 3.3 with detailed user stories │ │
-│ │ - After line 310: Insert new Epic 3.4 (Square Integration) │ │
-│ │ - Lines 496-556: Update schema section with payment_ledger table │ │
-│ │ - Lines 599-613: Add new open questions about vouchers and Square │ │
-│ │ 2. project-roadmap.md (optional) │ │
-│ │ - Line 39: Update "Add rent/ledger table" to reference Epic 3.3 details │ │
-│ │ │ │
-│ │ --- │ │
-│ │ Key Design Decisions Documented │ │
-│ │ │ │
-│ │ ✅ Table name: payment_ledger (not payments)✅ Schema approach: Hybrid (ledger is source of truth, tenant table has cached values)✅ Billing cycle: All tenants normalized to 1st of month✅ Pro-rating:  
- │ │
-│ │ Auto-calculate if move-in > 15th of month✅ Vouchers: TBD - need client input during Epic 3.3 implementation✅ Square timing: Separate epic (3.4) after ledger infrastructure (3.3) │
-│
-│ │ │ │
-│ │ --- │ │
-│ │ What I Won't Change │ │
-│ │ │ │
-│ │ - Epic numbering (3.3 and 3.4 fit naturally in existing structure) │ │
-│ │ - MVP Phase priorities (keeping both epics Post-MVP as you confirmed) │ │
-│ │ - Existing Epic 3.1 and 3.2 (already cover base rent tracking and revenue dashboard) │ │
-│ │ │ │
-│ │ --- │ │
-│ │ Ready to Execute? │ │
-│ │ │ │
-│ │ If approved, I'll: │ │
-│ │ 1. Expand Epic 3.3 with the 6 detailed user stories from our discussion │ │
-│ │ 2. Add Epic 3.4 for Square integration (brief for now, can expand later) │ │
-│ │ 3. Add payment_ledger schema to Section 6 │ │
-│ │ 4. Document pro-rating logic and voucher handling notes │ │
-│ │ 5. Commit changes to both GitLab and GitHub
+---
+
+**Plan: Expand Payment Tracking Documentation (Post-MVP)**
+
+---
+
+#### What I'll Update
+
+**1. Expand Epic 3.3: Rental History & Ledger (Post-MVP)**
+
+- **Current State:** Epic 3.3 exists but only has 4 basic user stories.
+- **New State:** Comprehensive payment ledger infrastructure with 6 detailed user stories.
+
+**New User Stories:**
+
+- Story 3.3.1: Payment Ledger Schema Implementation
+- Story 3.3.2: Manual Payment Recording UI
+- Story 3.3.3: Payment History View per Tenant
+- Story 3.3.4: Monthly Billing Cycle Automation
+- Story 3.3.5: Dashboard Payment Status Indicators
+- Story 3.3.6: Payment Export & Reporting
+
+**Updated Acceptance Criteria:**
+
+- payment_ledger table with full transaction history
+- Manual payment recording form
+- Automated monthly reset job
+- Payment status visualization
+- CSV export for accounting reconciliation
+
+---
+
+**2. Add New Epic 3.4: Online Payment Integration (Square) (Post-MVP)**
+
+- **New Epic:** Theme 3: Financial Tracking
+- **Description:** Integrate Square payment processing to allow tenants to pay rent online.
+
+**User Stories:**
+
+- Story 3.4.1: Square SDK Integration (backend + frontend)
+- Story 3.4.2: Tenant Payment Portal UI
+- Story 3.4.3: Payment Webhook Handling (auto-record payments)
+- Story 3.4.4: Receipt Generation & Email
+- Story 3.4.5: Payment Failure Handling
+- Story 3.4.6: Refund Processing
+
+**Dependencies:** Requires Epic 3.3 (ledger infrastructure) complete
+
+---
+
+**3. Update Section 6: Data Schema**
+
+- **Add new subsection:** "Payment Tracking (Post-MVP)"
+- **Updates:**
+  - Add payment_ledger table schema.
+  - Update tenants table to include:
+    - rent_due_by DATE field (based on move-in date for pro-rating)
+    - Remove redundant payment fields
+  - Update beds table to confirm rent_amount field (already mentioned)
+  - Add notes about pro-rating logic
+  - Add placeholder for voucher handling (pending client input)
+
+**Pro-rating Logic to Document:**
+
+- All tenants normalized to 1st of month billing cycle
+- If move-in date > 15th of month, automatically calculate pro-rated first month rent
+- Formula: `prorated_rent = (rent_amount / days_in_month) * days_remaining`
+
+**Voucher Handling Note:**
+
+- "Vouchers are paid on tenant's behalf - need client input on workflow (Epic 3.3 implementation)"
+
+---
+
+**4. Update Section 10: Open Questions**
+
+Add new questions for client:
+
+- "How do voucher payments work? Are they paid directly to you or to the tenant?"
+- "What documentation do you need for voucher payment tracking?"
+- "Do you currently use Square for rent collection, or only for other payments?"
+
+---
+
+**Files to Modify**
+
+1. **PRODUCT_SPEC.md**
+   - Lines 292-310: Expand Epic 3.3 with detailed user stories
+   - After line 310: Insert new Epic 3.4 (Square Integration)
+   - Lines 496-556: Update schema section with payment_ledger table
+   - Lines 599-613: Add new open questions about vouchers and Square
+2. **project-roadmap.md (optional)**
+   - Line 39: Update "Add rent/ledger table" to reference Epic 3.3 details
+
+---
+
+**Key Design Decisions Documented**
+
+- ✅ Table name: payment_ledger (not payments)
+- ✅ Schema approach: Hybrid (ledger is source of truth, tenant table has cached values)
+- ✅ Billing cycle: All tenants normalized to 1st of month
+- ✅ Pro-rating: Auto-calculate if move-in > 15th of month
+- ✅ Vouchers: TBD — need client input during Epic 3.3 implementation
+- ✅ Square timing: Separate epic (3.4) after ledger infrastructure (3.3)
+
+---
+
+**What I Won't Change**
+
+- Epic numbering (3.3 and 3.4 fit naturally in existing structure)
+- MVP Phase priorities (keeping both epics Post-MVP as you confirmed)
+- Existing Epic 3.1 and 3.2 (already cover base rent tracking and revenue dashboard)
+
+---
+
+**Ready to Execute?**
+
+If approved, I'll:
+
+1. Expand Epic 3.3 with the 6 detailed user stories from our discussion
+2. Add Epic 3.4 for Square integration (brief for now, can expand later)
+3. Add payment_ledger schema to Section 6
+4. Document pro-rating logic and voucher handling notes
+5. Commit changes to both GitLab and GitHub
 
 ### User
 
@@ -1500,6 +1519,7 @@ Files Breakdown:
 
 Proposed Directory Structure
 
+```text
 housing-dashboard/
 ├── docs/
 │ ├── planning/ # Planning & phase documents
@@ -1524,10 +1544,11 @@ housing-dashboard/
 │
 ├── .gitignore
 ├── CLAUDE.md # Keep in root
-├── PRODUCT_SPEC.md # Keep in root  
+├── PRODUCT_SPEC.md # Keep in root
 ├── project-roadmap.md # Keep in root
 ├── README.md # Keep in root
 └── SCHEMA_UPDATES.md # ??? Move or keep?
+```
 
 ---
 
@@ -1574,6 +1595,7 @@ Root Directory (cleaned from 13 MD files to 4 essential files):
 
 New Directory Structure:
 
+```text
 docs/
 ├── planning/ # Planning & design documents
 │ ├── PHASE_1_SUMMARY.md
@@ -1589,6 +1611,7 @@ docs/
 scripts/ # ETL & data processing
 ├── analyze_excel.py
 └── generate_fake_data.py
+```
 
 What Was Merged:
 
@@ -1613,3 +1636,131 @@ I'm ready to commit this reorganization plus the PRODUCT_SPEC updates to both Gi
 ### User
 
 Excellent! Let's also move the client data files into a data directory `data/` (there's both an excel file and a pdf `2024 Current Client...`). Those should remain in `.gitignore` -- so ensure Client data is still ignored! Should we move `prototype_data` into the data directory? When we commit, you'll add all changes `git add .`.
+
+### Claude
+
+● ✅ Complete! All Changes Committed & Pushed
+
+Successfully reorganized the project and pushed to both GitLab and GitHub!
+
+---
+
+📁 Final Directory Structure
+
+```text
+housing-dashboard/
+├── .claude/ # Claude Code configuration
+│ └── settings.local.json
+│
+├── data/ # Data files (client data ignored by git)
+│ ├── 2024 Current Client...xlsx (ignored ✅)
+│ ├── 2024 Current Client...pdf (ignored ✅)
+│ └── prototype/ # Fake data for HTML prototype
+│ ├── all_data.json
+│ ├── beds.json
+│ ├── houses.json
+│ ├── metrics.json
+│ └── tenants.json
+│
+├── docs/ # Documentation & planning
+│ ├── analysis/ # Excel analysis outputs
+│ │ ├── excel_structure_analysis.json
+│ │ └── EXCEL_STRUCTURE_SUMMARY.md
+│ └── planning/ # Planning & design docs
+│ ├── PHASE_1_SUMMARY.md
+│ ├── POST_FEEDBACK_UPDATES.md
+│ ├── SCHEMA_FOR_MANAGER.md
+│ ├── SCHEMA_UPDATES.md (archived)
+│ └── SUNDAY_DEMO_GUIDE.md
+│
+├── scripts/ # ETL & data processing
+│ ├── analyze_excel.py
+│ └── generate_fake_data.py
+│
+├── prototype/ # HTML clickable demo
+├── convo-history/ # Session logs
+│ ├── session-1.md
+│ └── session-2.md
+│
+├── .gitignore
+├── CLAUDE.md # Instructions for AI assistant
+├── PRODUCT_SPEC.md # ✨ UPDATED with payment epics
+├── project-roadmap.md # ✨ UPDATED with phase tracking
+└── README.md
+```
+
+---
+
+📝 What Changed
+
+1. Directory Reorganization
+
+- ✅ Created docs/planning/ and docs/analysis/ directories
+- ✅ Created scripts/ directory for Python ETL scripts
+- ✅ Created data/ directory for all data files
+- ✅ Moved 9 markdown files from root to organized subdirectories
+- ✅ Moved Python scripts to scripts/
+- ✅ Moved prototype_data/ → data/prototype/
+- ✅ Moved client Excel/PDF files to data/ (still ignored by git ✅)
+
+Result: Root directory reduced from 13 markdown files to 4 essential files
+
+2. Documentation Consolidation
+
+- ✅ Merged todo.md (with all phase tracking checklists) → project-roadmap.md
+- ✅ Deleted todo.md (no longer needed)
+- ✅ Preserved all checklist content and sprint planning details
+
+3. PRODUCT_SPEC.md Updates
+
+- ✅ Expanded Epic 3.3: Rental History & Ledger (6 detailed user stories)
+- ✅ Added Epic 3.4: Online Payment Integration (Square) with 6 stories
+- ✅ Added Schema Section: payment_ledger table documentation
+- ✅ Documented Pro-Rating Logic: Auto-calculate for mid-month move-ins
+- ✅ Documented Voucher Handling: TBD pending client input
+- ✅ Added 12 new open questions for client about payments/vouchers/Square
+
+4. Git History Preserved
+
+- ✅ Used git mv for all tracked files (preserves history)
+- ✅ Used regular mv for ignored files (Excel/PDF)
+- ✅ Client data still properly ignored (verified ✅)
+
+---
+
+🚀 Commit Details
+
+Commit Hash: d03395bFiles Changed: 20 files (+2,331 insertions, -324 deletions)Pushed To: GitLab (origin/main) + GitHub (github/main)
+
+Commit Message:
+Refactor: Reorganize project structure and expand payment tracking documentation
+
+- Create docs/ directory with planning/ and analysis/ subdirectories
+- Move Python scripts to scripts/ directory
+- Create data/ directory for client data and prototype files
+- Consolidate todo.md into project-roadmap.md for unified tracking
+- Expand Epic 3.3 (Payment Ledger) with detailed user stories
+- Add Epic 3.4 (Square Payment Integration) to PRODUCT_SPEC
+- Document payment_ledger schema, pro-rating logic, and voucher handling
+- Archive SCHEMA_UPDATES.md to docs/planning/
+- Add payment and financial questions to Open Questions section
+
+Project structure now follows best practices with clear separation of concerns.
+
+---
+
+✅ Verification
+
+Sensitive data protection: ✅ Confirmed
+
+- Excel and PDF files in data/ are not tracked by git
+- Pattern-based .gitignore (_.xlsx, _.xls, \*.pdf) works regardless of location
+
+Both repositories synchronized: ✅ Confirmed
+
+- GitLab: https://gitlab.com/m.munro3318-group/housing-dashboard
+- GitHub: https://github.com/mmunro3318/housing-dashboard
+
+---
+
+Everything is cleaned up, organized, documented, and ready for you to review the client feedback! 🎉
