@@ -35,34 +35,117 @@ See [project-roadmap.md](project-roadmap.md) for planned features and milestones
 
 Pull requests, issue reporting, and feedback are welcomed.
 
-## Running the Prototype
+## Project Status
 
-**Note:** This is a static HTML prototype for requirements gathering and client feedback. The production application will be built with React + Node.js.
+**Current Phase:** Phase 2 - Post-Demo Refinement
+**Live URL:** [https://housing-dashboard-5hlowacgt-mmunro3318s-projects.vercel.app](https://housing-dashboard-5hlowacgt-mmunro3318s-projects.vercel.app)
+**Last Updated:** October 27, 2025
 
-To view the prototype locally:
+✅ **Completed:**
+- Requirements gathering and client demo (Phase 1)
+- Database schema design (8 tables)
+- Vercel deployment setup with continuous integration
+- Frontend initialization (Vite + React + Tailwind CSS)
+- Coming Soon landing page deployed
 
-1. Clone this repository
+🚧 **In Progress:**
+- Supabase database setup
+- CI/CD pipeline configuration
+
+## Directory Structure
+
+```
+housing-dashboard/
+├── src/                      # Frontend React application
+│   ├── components/           # Reusable UI components
+│   ├── pages/                # Page-level components
+│   ├── hooks/                # Custom React hooks
+│   ├── utils/                # Utility functions
+│   ├── App.jsx               # Main app component
+│   ├── main.jsx              # React entry point
+│   └── index.css             # Global styles (Tailwind)
+├── api/                      # Backend serverless functions (Vercel)
+│   └── hello.js              # Sample API route
+├── public/                   # Static assets
+│   └── images/               # Image files
+├── docs/                     # Project documentation
+│   ├── schemas/              # Database schemas and field mappings
+│   ├── deployment/           # Deployment guides (Vercel, etc.)
+│   └── planning/             # Project planning docs
+├── prototype/                # Static HTML prototype (Phase 1)
+├── convo-history/            # Development session logs
+├── package.json              # Node.js dependencies
+├── vite.config.js            # Vite configuration
+├── tailwind.config.js        # Tailwind CSS configuration
+├── vercel.json               # Vercel routing configuration
+└── index.html                # HTML entry point
+```
+
+**Architecture:** Vercel-native monorepo
+- Single `package.json` for both frontend and backend
+- Frontend builds with Vite to `/dist`
+- Backend uses Vercel Serverless Functions (`/api` folder)
+- Automatic deployments on every push to GitHub
+
+See [docs/architecture/directory-structure.md](docs/architecture/directory-structure.md) for detailed structure documentation.
+
+## Development Setup
+
+### Prerequisites
+- Node.js 18+ and npm
+- Git
+- Vercel account (free tier)
+- Supabase account (free tier)
+
+### Local Development
+
+1. **Clone the repository**
    ```bash
    git clone https://github.com/mmunro3318/housing-dashboard.git
    cd housing-dashboard
    ```
 
-2. Open the prototype in your browser
+2. **Install dependencies**
    ```bash
-   cd prototype
-   # Then open index.html in your browser:
-   # - Windows: start index.html
-   # - macOS: open index.html
-   # - Linux: xdg-open index.html
+   npm install
    ```
 
-3. Navigate between pages:
-   - **Dashboard** (`index.html`) - Overview metrics and alerts
-   - **Properties** (`properties.html`) - Property and bed management
-   - **Tenants** (`tenants.html`) - Searchable tenant list
-   - **Intake Form** (`intake-form.html`) - Mobile-responsive tenant intake
+3. **Create `.env` file**
+   ```bash
+   # Copy from .env.example (when available)
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
 
-The prototype uses fake data loaded from `prototype/js/data.js`.
+4. **Run development server**
+   ```bash
+   npm run dev
+   # Opens http://localhost:3000
+   ```
+
+5. **Build for production**
+   ```bash
+   npm run build
+   # Output: ./dist folder
+   ```
+
+### Deployment
+
+The app automatically deploys to Vercel on every push:
+- **Production:** Push to `main` branch
+- **Preview:** Push to any feature branch
+
+See [docs/deployment/vercel-setup.md](docs/deployment/vercel-setup.md) for detailed deployment instructions.
+
+## Running the Prototype
+
+**Note:** The static HTML prototype (`/prototype` folder) was used for Phase 1 requirements gathering. The production application is now being built with React + Vite.
+
+To view the prototype:
+```bash
+cd prototype
+# Open index.html in your browser
+```
 
 ## Contact
 

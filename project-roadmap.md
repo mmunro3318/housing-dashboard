@@ -191,19 +191,23 @@ CREATE TABLE tenants (
 - [ ] Create sprint milestones
 - [ ] Add user stories as issues to GitLab
 - [ ] Set up labels (Epic, Story, Task, Bug, etc.)
-- [ ] Deploy to Vercel for continuous client feedback (see `docs/deployment/vercel-setup.md`)
-  - [ ] Create Vercel account and link GitHub
-  - [ ] Configure environment variables (Supabase, Google Sheets)
-  - [ ] Enable preview deployments for all branches
-  - [ ] Share production and preview URLs with client
+- [x] Deploy to Vercel for continuous client feedback (see `docs/deployment/vercel-setup.md`)
+  - [x] Create Vercel account and link GitHub
+  - [x] Configure environment variables (placeholders: Supabase, Google Sheets)
+  - [x] Enable preview deployments for all branches
+  - [x] Share production and preview URLs with client
+- [x] Initialize Vite + React frontend with Tailwind CSS
+- [x] Set up Vercel-native monorepo structure (frontend in `/src`, backend in `/api`)
+- [x] Create Coming Soon landing page with purple/pink theme
 
 #### Technical Planning
 - [ ] Set up Supabase project and database
-- [ ] Create database tables (houses, beds, tenants)
+- [ ] Create database tables (houses, beds, tenants, tenant_profiles, emergency_contacts, form_submissions, policy_agreements, voucher_rates)
 - [ ] Set up Row Level Security (RLS) policies
-- [ ] Plan API endpoint structure
-- [ ] Choose frontend framework approach (Vite + React recommended)
-- [ ] Set up CI/CD pipeline (GitLab CI)
+- [ ] Update Vercel environment variables with real Supabase credentials
+- [ ] Plan API endpoint structure (serverless functions in `/api`)
+- [x] Choose frontend framework approach (Vite + React + Tailwind CSS)
+- [ ] Set up CI/CD pipeline (GitLab CI) for automated testing
 
 #### Deliverables
 - [ ] Refined PRODUCT_SPEC.md with manager feedback
