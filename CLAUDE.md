@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+**Note:** **Always** check your available context each time I prompt you, and decide if we have enough room to perform the current actions!
+
 ## Project Overview
 
 This is a halfway housing management dashboard system designed to replace chaotic Excel-based workflows with a unified, secure dashboard. The system tracks residents, houses, beds, rent/voucher payments, waitlists, and contacts.
@@ -20,6 +22,7 @@ This is a halfway housing management dashboard system designed to replace chaoti
 **Dual Purpose:**
 
 This project serves two goals:
+
 1. **Real-world client project** - Solving an actual business problem for a halfway housing manager
 2. **Academic project** - Used for ITAD-300 Software Engineering coursework at Edmonds College
 
@@ -28,10 +31,12 @@ As such, development must balance practical delivery with educational value.
 **Repository Hosting:**
 
 This repository is maintained on **both GitLab and GitHub**:
+
 - **GitLab** (`origin`): Primary for CI/CD, Issues/Epics, and class requirements
 - **GitHub** (`github`): Portfolio visibility and industry-standard showcase
 
 **IMPORTANT**: Always push commits to both remotes:
+
 ```bash
 git push origin main && git push github main
 ```
@@ -61,6 +66,7 @@ Adjust explanations accordingly. Don't assume knowledge of advanced patterns or 
 **CRITICAL**: Never deviate from the established tech stack without explicit discussion.
 
 **Approved Stack:**
+
 - Frontend: React + Vite + Tailwind CSS + RTK Query/Redux
 - Backend: Node.js + Express
 - Database: Supabase (PostgreSQL)
