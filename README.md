@@ -37,20 +37,24 @@ Pull requests, issue reporting, and feedback are welcomed.
 
 ## Project Status
 
-**Current Phase:** Phase 2 - Post-Demo Refinement
+**Current Phase:** Phase 2 - Post-Demo Refinement (Database Setup Complete)
 **Live URL:** [https://housing-dashboard-5hlowacgt-mmunro3318s-projects.vercel.app](https://housing-dashboard-5hlowacgt-mmunro3318s-projects.vercel.app)
-**Last Updated:** October 27, 2025
+**Last Updated:** October 28, 2025
 
 ✅ **Completed:**
 - Requirements gathering and client demo (Phase 1)
 - Database schema design (8 tables)
+- Supabase database setup with Row Level Security (RLS)
+- Database seeded with realistic test data (32 tenants, 49 beds, 5 houses, etc.)
+- Test data generators created (see `scripts/`)
 - Vercel deployment setup with continuous integration
 - Frontend initialization (Vite + React + Tailwind CSS)
 - Coming Soon landing page deployed
+- Database connection test (frontend → Supabase)
 
 🚧 **In Progress:**
-- Supabase database setup
-- CI/CD pipeline configuration
+- CI/CD pipeline configuration (GitLab CI)
+- Frontend component development (next: Houses List, Tenant Dashboard)
 
 ## Directory Structure
 

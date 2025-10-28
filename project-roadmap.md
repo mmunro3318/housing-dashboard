@@ -45,6 +45,11 @@
 
 # Housing Dashboard ETL & SQL Schemas
 
+**Note**: The schema below represents the initial 3-table design. The current production schema has been expanded to **8 tables**. For up-to-date schema documentation, see:
+- `docs/schemas/supabase-migration.sql` - Complete table definitions
+- `docs/schemas/supabase-rls-policies.sql` - Row Level Security policies
+- `docs/schemas/SCHEMA_FOR_MANAGER.md` - Manager-friendly schema overview
+
 ## ETL Guidelines
 
 **Extract:**
@@ -125,8 +130,8 @@ CREATE TABLE tenants (
 
 # Detailed Phase Tracking & Sprint Planning
 
-**Last Updated**: October 20, 2025
-**Current Phase**: Post-Demo Refinement
+**Last Updated**: October 28, 2025
+**Current Phase**: Post-Demo Refinement (Database Setup Complete)
 
 ## Phase 1: Requirements Gathering & Sunday Demo ✅ COMPLETE
 
@@ -201,10 +206,12 @@ CREATE TABLE tenants (
 - [x] Create Coming Soon landing page with purple/pink theme
 
 #### Technical Planning
-- [ ] Set up Supabase project and database
-- [ ] Create database tables (houses, beds, tenants, tenant_profiles, emergency_contacts, form_submissions, policy_agreements, voucher_rates)
-- [ ] Set up Row Level Security (RLS) policies
-- [ ] Update Vercel environment variables with real Supabase credentials
+- [x] Set up Supabase project and database
+- [x] Create database tables (8 tables: houses, beds, tenants, tenant_profiles, emergency_contacts, form_submissions, policy_agreements, system_settings)
+- [x] Set up Row Level Security (RLS) policies
+- [x] Create Storage bucket for tenant profile pictures
+- [x] Update Vercel environment variables with real Supabase credentials
+- [x] Test database connection from frontend
 - [ ] Plan API endpoint structure (serverless functions in `/api`)
 - [x] Choose frontend framework approach (Vite + React + Tailwind CSS)
 - [ ] Set up CI/CD pipeline (GitLab CI) for automated testing
@@ -230,13 +237,16 @@ CREATE TABLE tenants (
 ### Sprint 1 Focus: Milestone 1 + 2 (Data Migration & Backend Setup)
 
 #### Data Migration (Epic 1.1, 1.2 - backend portion)
-- [ ] Write ETL script (Python or Node.js)
-- [ ] Extract data from Excel file
-- [ ] Transform data (normalize, generate IDs, clean)
-- [ ] Load data into Supabase tables (houses, beds, tenants)
-- [ ] Validate data integrity and relationships
-- [ ] Document migration process
+- [x] Write seed/ETL script (Node.js with faker for realistic test data)
+- [x] Extract data patterns from Excel file (analysis complete)
+- [x] Transform data (normalize, generate UUIDs, handle circular FKs)
+- [x] Load data into Supabase tables (all 8 tables seeded successfully)
+- [x] Validate data integrity and relationships (circular FK resolution tested)
+- [x] Document migration process (see `scripts/README.md`)
+- [x] Create test data generators for houses, beds, tenants, profiles, contacts, forms, policies
+- [x] Successfully seed database with 5 houses, 49 beds, 32 tenants, 65 contacts, 63 forms, 310 policy agreements
 - [ ] Create backup of original Excel data
+- [ ] Migrate REAL client data from Excel (pending client data access)
 
 #### Backend Setup
 - [ ] Initialize Node.js/Express project
@@ -347,6 +357,11 @@ CREATE TABLE tenants (
 - [ ] Document storage (leases, etc.)
 - [ ] Mobile native apps
 
+### Schema Optimization Considerations (Before Production with Real Data)
+- [ ] **CCO Table Normalization**: Extract Community Corrections Officer (CCO) info into separate table to avoid duplication when multiple tenants share same CCO. Currently stored in `tenant_profiles.cco_name` and `cco_phone`. Consider creating `community_corrections_officers` table with 1:many relationship to tenants.
+- [ ] **Probation/Parole Officer Table**: Similar normalization opportunity for probation/parole officers
+- [ ] **Recovery Program Table**: If recovery programs are standardized, could extract to lookup table
+
 ---
 
 ## Success Criteria for MVP Phase 1
@@ -373,6 +388,9 @@ CREATE TABLE tenants (
 - Data migration quality issues → Mitigation: Manual review and cleanup after ETL
 - Tenant adoption of intake form → Mitigation: Provide manager fallback to enter data
 - Scope creep → Mitigation: Strict MVP definition, parking lot for post-MVP features
+
+## Active Issues
+- [ ] **Vercel Deployment Not Auto-Updating**: Commits pushed successfully (including database connection test) but Vercel production deployment has not reflected changes. Monitor after next commit push. May need to manually trigger deployment or check build logs.
 
 ## Dependencies
 - Supabase availability and reliability
