@@ -928,3 +928,325 @@ We'll defer schema changes until later. But we should make a note of all the sch
 We'll collapse context first, then start on the widget updates.
 
 But we've made good progress, so let's go ahead and commit all changes `git add .`, commit and push.
+
+## Claude
+
+● Excellent! All changes have been committed and pushed successfully to both GitLab and GitHub.
+
+Commit Summary
+
+Commit: 2af3820 - "feat: Add dashboard widgets and property financial tracking"
+
+Pushed to:
+
+- ✅ GitLab (origin): feature/dashboard-read-operations
+- ✅ GitHub: feature/dashboard-read-operations
+
+Changes included:
+
+- 17 files changed, 2,728 insertions(+), 57 deletions(-)
+- New dashboard widgets (Properties Overview, Voucher Expiration, Available Beds)
+- Property rent tracking (base vs actual rent on bed cards)
+- Financial summary on Properties page (actual vs potential income)
+- Date helper utilities
+- Planning documents for future work
+
+New files created:
+
+1. src/components/dashboard/PropertiesOverviewWidget.jsx
+2. src/components/dashboard/VoucherExpirationWidget.jsx
+3. src/components/dashboard/AvailableBedsList.jsx
+4. src/utils/dateHelpers.js
+5. planned-schema-changes.md
+6. planned-widgets.md
+
+Modified files:
+
+- src/pages/Dashboard.jsx (added widgets, houses query)
+- src/pages/Properties.jsx (rent display, financial summary)
+- src/pages/Tenants.jsx (rent fixes, tenant_types filter)
+- Screenshots updated
+
+---
+
+You're all set to collapse context now! When you're ready to continue, we'll tackle:
+
+1. Simplifying Properties Overview Widget (remove redundancy, add Current Income)
+2. Creating Pending Arrivals Widget
+3. Making Available Beds "+X more" clickable
+
+All the planning is documented in the new .md files so we won't lose any context. Great progress today! 🎉
+
+## User
+
+[compact]
+
+Okay -- let's implement the changes to the summary widgets now. Plan our your strategy thoroughly, first.
+
+## Claude
+
+Here is Claude's plan:
+╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌
+Dashboard Widget Enhancements
+
+1.  Simplify PropertiesOverviewWidget
+
+- Remove 3 redundant metrics (Total Beds, Occupancy Rate, At Full Capacity)
+- Keep Total Properties and Potential Income
+- Add Current Income metric (sum of actual_rent from occupied tenants)
+- Add tenants prop to component for rent calculation
+- Update grid from 5-column to 3-column responsive layout
+
+2.  Create PendingArrivalsWidget
+
+- New component: src/components/dashboard/PendingArrivalsWidget.jsx
+- Mirror VoucherExpirationWidget structure with blue theme
+- Filter tenants where entry_date is between today and +30 days
+- Exclude tenants who have already exited
+- Show tenant name, entry date, days until arrival
+- Display first 10, indicate if more exist
+- Empty state: "No arrivals scheduled in next 30 days"
+
+3.  Enhance AvailableBedsList
+
+- Import Link from react-router-dom
+- Convert "+X more available" text to clickable link
+- Link to /properties?filter=available
+- Add blue link styling with hover effects
+
+4.  Update Dashboard.jsx
+
+- Import PendingArrivalsWidget
+- Add tenants prop to PropertiesOverviewWidget
+- Add PendingArrivalsWidget to Row 3
+- Update Row 3 grid from 2-column to 3-column layout
+
+Implementation order: PropertiesOverviewWidget → PendingArrivalsWidget → AvailableBedsList → Dashboard.jsx
+
+## User
+
+[confirm]
+
+## Claude
+
+● Perfect! All dashboard widget enhancements have been successfully implemented with no errors! 🎉
+
+Summary of Changes
+
+✅ 1. Simplified PropertiesOverviewWidget
+
+- Removed: Total Beds, Occupancy Rate, At Full Capacity (3 redundant metrics)
+- Kept: Total Properties, Potential Income
+- Added: Current Income (calculates actual rent from occupied beds with tenant data)
+- Updated: Grid layout from 5-column to 3-column responsive design
+- File: src/components/dashboard/PropertiesOverviewWidget.jsx:3
+
+✅ 2. Created PendingArrivalsWidget
+
+- New component: Shows tenants moving in within next 30 days
+- Filters: entry_date between today and +30 days, exit_date is null
+- Display: Tenant name, arrival date, days until arrival
+- Theme: Blue color scheme (arrival/intake)
+- Empty state: "All Clear! No arrivals scheduled"
+- File: src/components/dashboard/PendingArrivalsWidget.jsx:1
+
+✅ 3. Enhanced AvailableBedsList
+
+- Added: Clickable link for "+X more available" text
+- Links to: /properties?filter=available
+- Styling: Blue link with hover effects
+- File: src/components/dashboard/AvailableBedsList.jsx:108
+
+✅ 4. Updated Dashboard Layout
+
+- Added: PendingArrivalsWidget import and component
+- Updated: PropertiesOverviewWidget now receives tenants prop
+- Changed: Row 3 grid from 2-column to 3-column layout
+- Layout: Now displays VoucherExpiration, PendingArrivals, and AvailableBeds side-by-side
+- File: src/pages/Dashboard.jsx:8,124,132
+
+Dev Server Status
+
+All changes compiled successfully with HMR updates:
+
+- ✅ PropertiesOverviewWidget: 4 updates
+- ✅ AvailableBedsList: 2 updates
+- ✅ Dashboard.jsx: 3 updates
+- ✅ No errors or warnings
+
+The dashboard should now display:
+
+1. Row 1: 4 metric cards (Total Beds, Occupied, Available, Occupancy Rate)
+2. Row 2: Properties Overview with 3 metrics (Total Properties, Current Income, Potential Income)
+3. Row 3: 3 widgets side-by-side (Voucher Expiration, Pending Arrivals, Available Beds)
+
+You can test the clickable link on Available Beds widget - it will navigate to Properties page with ?filter=available query parameter!
+
+## User
+
+Perfect! Looks good. I've updated the screenshot.
+
+With the "+7 more available" link, it currently just goes to the Properties page. I'm thinking we'll later change this by adding a Beds page that allows the manager to more easily assign tenants to beds. Probably an easy page to make. I just shows all beds, filter by all/available/occupied/hold, and we'll add buttons later for the manager to assign/transfer/vacate/remove.
+
+Thoughts so far, and ideas on next steps for our Read Only Phase?
+
+## Claude
+
+● Excellent progress! The dashboard looks really polished now. Let me share my thoughts:
+
+On the Beds Page Idea
+
+Strong agreement - A dedicated Beds page makes a lot of sense! Here's why:
+
+1. Centralized bed management - Right now beds are nested under houses on Properties page. A flat view would be much easier for:
+
+   - Quick scanning of all available beds across properties
+   - Comparing beds by rent, status, location
+   - Future assignment workflow (drag-drop or modal-based)
+
+2. Natural progression - You already have the data structure in place:
+
+   - Beds table with status, rent, tenant relationships
+   - House lookup for address context
+   - Tenant lookup for occupant info
+
+3. Filter/sort capability - Building on the Tenants page patterns:
+
+   - Status filter: All / Available / Occupied / Pending / Hold
+   - Sort by: Property, Rent, Room Number, Status
+   - Search by property address or room number
+   - Could show county badges for DOC tenant restrictions
+
+4. Future-proofs for write operations - When you add assign/transfer/vacate buttons later, this page becomes the natural hub for all bed management operations.
+
+---
+
+Thoughts on Read-Only Phase Completion
+
+Looking at what we've built so far:
+
+✅ Completed Pages:
+
+1. Dashboard - Metrics, widgets, financial overview, alerts
+2. Properties - House cards, bed grids, financial summaries
+3. Tenants - Search, filters, sorting, inline details
+
+🎯 Suggested Next Steps (in priority order):
+
+1. Beds Page (High Priority)
+
+Why now: Natural complement to Properties/Tenants pages, provides centralized bed view before adding write operations.
+
+Proposed features:
+
+- Bed cards/table with: Room #, Property Address, Status, Rent, Occupant (if any)
+- Status filter tabs (All/Available/Occupied/Pending/Hold)
+- Sort by: Property, Rent, Status
+- Search by property address or room number
+- Click bed → Show details (property info, occupant info if occupied)
+- County badges (important for DOC tenant restrictions)
+
+Reusable patterns:
+
+- Filter/sort logic from Tenants page
+- Card layouts from Properties page
+- Badge components from everywhere
+
+---
+
+2. Polish & Refinements (Medium Priority)
+
+Before adding new pages, consider small UX improvements:
+
+Dashboard:
+
+- ✅ Already excellent!
+- Future: Clicking metrics could filter/navigate (e.g., "17 Available" → Beds page filtered to available)
+
+Properties Page:
+
+- Consider adding a "quick stats" summary at top (total properties, total potential income, total current income)
+- Maybe add property status indicators (fully occupied, has vacancies, all vacant)
+
+Tenants Page:
+
+- Consider adding "quick actions" (view DOC #, call tenant) for future
+- Export button (CSV download of filtered tenants)
+
+Navigation:
+
+- Add Beds link to sidebar once page is created
+- Consider adding breadcrumbs for context
+
+---
+
+3. Contacts/Resources Page (Lower Priority)
+
+If time permits before moving to write operations:
+
+From your Excel data, you have Program/Counselor contacts. A simple read-only page showing:
+
+- List of contacts (name, program, phone, email)
+- Search by name or program
+- Filter by program type
+
+Value: Manager has quick access to contact info without hunting through files.
+
+---
+
+4. Financial Overview Page (Future/Optional)
+
+This is probably Phase 3+ material, but worth mentioning:
+
+- Month-by-month income tracking
+- Property-level profitability
+- Rent collection status by tenant
+- Voucher payment tracking
+
+Probably defer this until you have transaction history and more financial data structure in place.
+
+---
+
+My Recommendation for Next Steps:
+
+Immediate (before context collapse):
+
+1. ✅ Current session cleanup - Test the dashboard updates, take screenshots, commit changes
+2. 🎯 Plan Beds page - After collapse, create comprehensive plan for Beds page (similar to how we planned dashboard widgets)
+
+After Beds page is complete:
+
+- Review all three pages (Dashboard, Properties, Tenants, Beds) for polish
+- Consider small UX improvements (export buttons, click-through navigation, etc.)
+- Milestone checkpoint: Read-Only Phase essentially complete ✅
+
+Then transition to:
+
+- Phase 4: Write Operations (Create/Edit/Delete for tenants, properties, beds)
+- Forms implementation (tenant intake, change requests)
+- Bed assignment workflow
+
+---
+
+Final Thought:
+
+You're in a really good spot! The read-only foundation is solid:
+
+- ✅ Database connected and seeded
+- ✅ React Query data fetching working perfectly
+- ✅ Reusable component patterns established
+- ✅ Consistent styling and UX patterns
+- ✅ Complex filtering/sorting/search logic proven
+
+A Beds page would be a great "capstone" for the read-only phase - it rounds out the data viewing capabilities before you start building write operations. It's also a relatively straightforward page since you  
+ can reuse so many patterns from Tenants page.
+
+Ready to commit these dashboard changes and plan the Beds page? 🚀
+
+## User
+
+Yes -- let's commit the changes so far, and then we'll plan out the Beds page.
+
+I like most of your ideas, but we'll defer those to later. Let's get the core of the dashboard done for Client feedback. Commit all changes `git add .`.
+
+But first -- I added a `documentation-specialist` subagent to help keep our documentation up-to-date. Let's try utilizing him now (we've been lax and neglectful in keeping our docs updated). This should include an updated directory structure in the README.

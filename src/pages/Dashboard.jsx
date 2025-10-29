@@ -5,6 +5,7 @@ import MetricCard from '../components/dashboard/MetricCard';
 import PropertiesOverviewWidget from '../components/dashboard/PropertiesOverviewWidget';
 import AvailableBedsList from '../components/dashboard/AvailableBedsList';
 import VoucherExpirationWidget from '../components/dashboard/VoucherExpirationWidget';
+import PendingArrivalsWidget from '../components/dashboard/PendingArrivalsWidget';
 
 function Dashboard() {
   // Fetch all beds to calculate metrics
@@ -123,12 +124,17 @@ function Dashboard() {
           <PropertiesOverviewWidget
             houses={houses}
             beds={beds}
+            tenants={tenants}
             isLoading={isLoading}
           />
 
-          {/* Row 3: Voucher Alerts and Available Beds */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Row 3: Voucher Alerts, Pending Arrivals, and Available Beds */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <VoucherExpirationWidget
+              tenants={tenants}
+              isLoading={isLoading}
+            />
+            <PendingArrivalsWidget
               tenants={tenants}
               isLoading={isLoading}
             />

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 function AvailableBedsList({ beds, houses, isLoading }) {
   if (isLoading) {
@@ -104,9 +105,12 @@ function AvailableBedsList({ beds, houses, isLoading }) {
 
             {hasMore && (
               <div className="mt-4 pt-3 border-t border-gray-200 text-center">
-                <p className="text-sm text-gray-500">
+                <Link
+                  to="/properties?filter=available"
+                  className="text-sm text-blue-600 hover:text-blue-800 hover:underline font-medium"
+                >
                   +{enrichedBeds.length - 10} more available
-                </p>
+                </Link>
               </div>
             )}
           </>

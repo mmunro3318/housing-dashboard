@@ -1,20 +1,27 @@
 # Directory Structure
 
-**Last Updated:** October 27, 2025
-**Architecture:** Vercel-native Monorepo
-**Framework:** Vite + React + Tailwind CSS
+**Last Updated:** October 29, 2025
+**Architecture:** Vercel-native Monorepo with Client-Side Data Fetching
+**Framework:** Vite + React + Tailwind CSS + React Query + React Router v7
 
 ---
 
 ## Overview
 
-This project uses a **Vercel-native monorepo structure** where the frontend and backend share a single `package.json`. This minimizes configuration complexity while providing the benefits of a full-stack application.
+This project uses a **Vercel-native monorepo structure** where the frontend and backend share a single `package.json`. Currently in the Read-Only phase, data is fetched directly from Supabase using client-side queries (no backend API layer yet).
+
+**Current Architecture:**
+- **Frontend**: React with Vite, Tailwind CSS, React Router v7
+- **State Management**: TanStack React Query for server state caching
+- **Data Layer**: Direct Supabase client calls via @supabase/supabase-js
+- **Backend**: Vercel Serverless Functions in `/api` (planned for CRUD operations)
 
 **Key Benefits:**
 - Single build configuration
 - No CORS issues (frontend and backend share the same domain)
 - Automatic serverless function deployment via Vercel
 - Simplified dependency management
+- Real-time data fetching with React Query caching
 
 ---
 
@@ -50,34 +57,82 @@ React application code. All components, pages, hooks, and utilities.
 
 ```
 src/
-├── components/               # Reusable UI components
-│   ├── layout/               # Layout components (Header, Footer, Sidebar)
-│   ├── forms/                # Form components (Input, Select, TextArea, etc.)
-│   ├── modals/               # Modal dialogs
-│   └── ui/                   # Generic UI components (Button, Card, Badge, etc.)
-├── pages/                    # Page-level components (route components)
-│   ├── Dashboard.jsx         # Main dashboard
-│   ├── Properties.jsx        # Property management
-│   ├── Tenants.jsx           # Tenant management
-│   ├── IntakeForm.jsx        # Resident intake form
-│   └── Login.jsx             # Authentication
-├── hooks/                    # Custom React hooks
-│   ├── useAuth.js            # Authentication hook
-│   ├── useSupabase.js        # Supabase client hook
-│   └── useForm.js            # Form validation hook
-├── utils/                    # Utility functions
-│   ├── supabase.js           # Supabase client initialization
-│   ├── validators.js         # Form validation helpers
-│   └── formatters.js         # Data formatting utilities
-├── App.jsx                   # Main app component (routing, providers)
-├── main.jsx                  # React entry point (ReactDOM.render)
-└── index.css                 # Global styles (Tailwind directives)
+├── components/                   # Reusable UI components
+│   ├── layout/                   # Layout components
+│   │   ├── Layout.jsx            # Main layout wrapper with sidebar and routing
+│   │   ├── Header.jsx            # Top navigation header with branding
+│   │   └── Sidebar.jsx           # Side navigation menu with active state
+│   └── dashboard/                # Dashboard-specific widgets
+│       ├── MetricCard.jsx        # Reusable metric card component (Total Beds, Occupancy, etc.)
+│       ├── PropertiesOverviewWidget.jsx  # Properties summary table (beds, occupancy, income)
+│       ├── AvailableBedsList.jsx         # Available beds widget with clickable link
+│       ├── VoucherExpirationWidget.jsx   # Voucher expiration alerts (30-day window)
+│       └── PendingArrivalsWidget.jsx     # Upcoming tenant arrivals (30-day window)
+├── pages/                        # Page-level components (route components)
+│   ├── Dashboard.jsx             # Main dashboard with metrics and widgets
+│   ├── Properties.jsx            # Property management page with financial tracking
+│   └── Tenants.jsx               # Tenant roster with search and filter by status
+├── utils/                        # Utility functions
+│   ├── supabase.js               # Supabase client initialization
+│   └── dateHelpers.js            # Date formatting utilities (formatDate, isWithinDays)
+├── App.jsx                       # Main app component with React Router setup
+├── main.jsx                      # React entry point (createRoot, QueryClientProvider)
+└── index.css                     # Global styles (Tailwind directives + custom CSS)
 ```
+
+**Implementation Status:**
+- ✅ Layout components (Header, Sidebar, Layout wrapper)
+- ✅ Dashboard page with 4 metric cards + 4 widgets
+- ✅ Properties page with financial tracking
+- ✅ Tenants page with search and filtering
+- ⏳ Forms (planned for CRUD operations phase)
+- ⏳ Modals (planned for CRUD operations phase)
+- ⏳ Authentication (planned for future phase)
 
 **File Naming Conventions:**
 - Components: PascalCase (e.g., `DashboardCard.jsx`)
 - Utilities/hooks: camelCase (e.g., `useAuth.js`, `formatDate.js`)
 - Pages: PascalCase (e.g., `Dashboard.jsx`)
+
+---
+
+## Dashboard Widget Architecture
+
+The Dashboard page follows a structured 3-row grid layout:
+
+### Row 1: Metric Cards (4 columns)
+- **Total Beds**: Count of all beds across all properties
+- **Occupied**: Count of beds with status 'Occupied'
+- **Available**: Count of beds with status 'Available'
+- **Occupancy Rate**: Percentage of occupied beds (calculated: occupied / total × 100)
+
+### Row 2: Properties Overview Widget (full width)
+A table widget displaying all properties with the following columns:
+- Property Address
+- Total Beds
+- Occupied Beds
+- Available Beds
+- Current Income (sum of monthly_rent for occupied beds)
+
+### Row 3: Alert and Action Widgets (3 columns)
+- **VoucherExpirationWidget**: Lists tenants with vouchers expiring within 30 days
+- **PendingArrivalsWidget**: Lists tenants with entry_date within next 30 days
+- **AvailableBedsList**: Quick reference list of available beds with link to Properties page
+
+**Data Flow:**
+```
+Dashboard.jsx
+  ↓ useQuery hooks
+  ↓ Fetch from Supabase (beds, tenants, houses)
+  ↓ Pass data as props
+  ↓ Widget components render
+```
+
+**State Management:**
+- React Query handles all data fetching and caching
+- Queries are keyed by entity name ('beds', 'tenants', 'houses')
+- Loading states handled at widget level
+- Error boundaries at page level
 
 ---
 
@@ -198,9 +253,12 @@ Single package.json for both frontend and backend. Contains all dependencies and
 
 **Dependencies:**
 - `react`, `react-dom` - Frontend framework
-- `react-router-dom` - Client-side routing
+- `react-router-dom` - Client-side routing (v7)
+- `@tanstack/react-query` - Server state management and caching
+- `@supabase/supabase-js` - Supabase client for database access
 - `tailwindcss` - CSS framework
 - `vite` - Build tool
+- `@vitejs/plugin-react` - Vite plugin for React Fast Refresh
 
 ---
 
