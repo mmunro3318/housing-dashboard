@@ -43,6 +43,10 @@ git push origin main && git push github main
 
 ## Working with This Repository
 
+**Terminal:**
+
+Your instance is running in a Git Bash shell, so use Bash commands.
+
 **Educational Approach:**
 
 When working with the developer (Michael), always:
@@ -51,6 +55,7 @@ When working with the developer (Michael), always:
 2. **Outline before implementing** - Present plans and get approval before coding
 3. **Walk through your thinking** - Explain why you're choosing specific approaches
 4. **Stop and discuss** - For any new dependencies, architectural decisions, or deviations
+5. **Speak as a peer and collaborator** - Use a collaborative and technical tone in your responses
 
 **Developer Experience Level:**
 

@@ -46,6 +46,7 @@
 # Housing Dashboard ETL & SQL Schemas
 
 **Note**: The schema below represents the initial 3-table design. The current production schema has been expanded to **8 tables**. For up-to-date schema documentation, see:
+
 - `docs/schemas/supabase-migration.sql` - Complete table definitions
 - `docs/schemas/supabase-rls-policies.sql` - Row Level Security policies
 - `docs/schemas/SCHEMA_FOR_MANAGER.md` - Manager-friendly schema overview
@@ -136,6 +137,7 @@ CREATE TABLE tenants (
 ## Phase 1: Requirements Gathering & Sunday Demo ✅ COMPLETE
 
 ### Objectives
+
 - Validate product assumptions with housing manager
 - Create clickable prototype to demonstrate future workflow
 - Gather feedback to refine requirements before development
@@ -143,6 +145,7 @@ CREATE TABLE tenants (
 ### Completed Tasks
 
 #### Documentation ✅
+
 - [x] Create user personas (Manager, Tenant, DOC Stakeholder)
 - [x] Define themes and epics structure
 - [x] Write PRODUCT_SPEC.md
@@ -150,12 +153,14 @@ CREATE TABLE tenants (
 - [x] Create manager-friendly schema documentation
 
 #### Data Analysis & Preparation ✅
+
 - [x] Analyze Excel file structure (read-only, no sensitive data committed)
 - [x] Document data patterns and field mappings
 - [x] Generate fake/filler data matching real patterns (JSON format)
 - [x] Create sample dataset for prototype (3-4 houses, 10-15 beds, 8-12 tenants)
 
 #### Sunday Demo Prototype ✅
+
 - [x] Design wireframes for key screens
 - [x] Build clickable HTML prototype using Tailwind CSS
 - [x] Populate prototype with fake data
@@ -167,6 +172,7 @@ CREATE TABLE tenants (
 ## Phase 2: Post-Demo Refinement (October 21-27, 2025) - IN PROGRESS
 
 ### Objectives
+
 - Incorporate manager feedback into requirements
 - Finalize MVP scope and priorities
 - Break epics into detailed user stories
@@ -175,27 +181,30 @@ CREATE TABLE tenants (
 ### Tasks
 
 #### Requirements Refinement
-- [ ] Conduct feedback session with manager
-- [ ] Answer open questions from PRODUCT_SPEC.md (see Section 10)
+
+- [x] Conduct feedback session with manager
+- [ ] Answer all open questions from PRODUCT_SPEC.md (see Section 10)
 - [ ] Update PRODUCT_SPEC.md with feedback
 - [ ] Finalize MVP Phase 1 scope
 - [ ] Identify any scope creep or descoped items
 
 #### Agile Backlog Creation
-- [ ] Break MVP Phase 1 epics into detailed user stories
-- [ ] Write acceptance criteria for each user story
+
+- [x] Break MVP Phase 1 epics into detailed user stories
+- [x] Write acceptance criteria for each user story
 - [ ] Estimate user stories (story points or t-shirt sizes)
 - [ ] Prioritize backlog using MoSCoW method
 - [ ] Define Definition of Done for user stories
 - [ ] Plan first 2-3 sprints (2-week sprints recommended)
 
 #### Project Setup
+
 - [x] Set up GitLab repository for CI/CD and class requirements
 - [x] Set up GitHub repository for portfolio visibility
 - [ ] Set up GitLab Project board (Kanban or Scrum template)
 - [ ] Create sprint milestones
-- [ ] Add user stories as issues to GitLab
-- [ ] Set up labels (Epic, Story, Task, Bug, etc.)
+- [x] Add user stories as issues to GitLab
+- [x] Set up labels (Epic, Story, Task, Bug, etc.)
 - [x] Deploy to Vercel for continuous client feedback (see `docs/deployment/vercel-setup.md`)
   - [x] Create Vercel account and link GitHub
   - [x] Configure environment variables (placeholders: Supabase, Google Sheets)
@@ -206,6 +215,7 @@ CREATE TABLE tenants (
 - [x] Create Coming Soon landing page with purple/pink theme
 
 #### Technical Planning
+
 - [x] Set up Supabase project and database
 - [x] Create database tables (8 tables: houses, beds, tenants, tenant_profiles, emergency_contacts, form_submissions, policy_agreements, system_settings)
 - [x] Set up Row Level Security (RLS) policies
@@ -217,6 +227,7 @@ CREATE TABLE tenants (
 - [ ] Set up CI/CD pipeline (GitLab CI) for automated testing
 
 #### Deliverables
+
 - [ ] Refined PRODUCT_SPEC.md with manager feedback
 - [ ] Prioritized backlog with 20-30 user stories
 - [ ] Sprint 1 & 2 plans
@@ -229,6 +240,7 @@ CREATE TABLE tenants (
 ## Phase 3: Development Start - Sprint 1 (October 28 - November 10, 2025)
 
 ### Objectives
+
 - Migrate Excel data to Supabase
 - Set up backend API
 - Begin frontend development
@@ -237,6 +249,7 @@ CREATE TABLE tenants (
 ### Sprint 1 Focus: Milestone 1 + 2 (Data Migration & Backend Setup)
 
 #### Data Migration (Epic 1.1, 1.2 - backend portion)
+
 - [x] Write seed/ETL script (Node.js with faker for realistic test data)
 - [x] Extract data patterns from Excel file (analysis complete)
 - [x] Transform data (normalize, generate UUIDs, handle circular FKs)
@@ -249,8 +262,8 @@ CREATE TABLE tenants (
 - [ ] Migrate REAL client data from Excel (pending client data access)
 
 #### Backend Setup
-- [ ] Initialize Node.js/Express project
-- [ ] Configure Supabase client connection
+
+- [x] Configure Supabase client connection
 - [ ] Implement authentication middleware (Supabase Auth)
 - [ ] Create REST API endpoints (see detailed list below)
 - [ ] Implement request validation (Zod or Joi)
@@ -259,6 +272,7 @@ CREATE TABLE tenants (
 - [ ] Write unit tests for API endpoints
 
 **API Endpoints:**
+
 - [ ] GET /api/houses (list all properties)
 - [ ] GET /api/houses/:id (single property with beds)
 - [ ] POST /api/houses (create property) - Manager only
@@ -274,6 +288,7 @@ CREATE TABLE tenants (
 - [ ] POST /api/intake (tenant self-service form submission)
 
 #### Frontend Setup (Partial - Sprint 1)
+
 - [ ] Initialize React project (Vite + JavaScript - NO TypeScript)
 - [ ] Set up routing (React Router)
 - [ ] Configure Tailwind CSS
@@ -283,6 +298,7 @@ CREATE TABLE tenants (
 - [ ] Build basic dashboard page (shell only, data integration in Sprint 2)
 
 #### DevOps
+
 - [ ] Deploy backend to hosting service (Render, Railway, or Vercel Functions)
 - [ ] Deploy frontend to Vercel
 - [ ] Set up environment variables
@@ -290,6 +306,7 @@ CREATE TABLE tenants (
 - [ ] Set up monitoring and error tracking (Sentry optional)
 
 #### Sprint 1 Deliverables
+
 - [ ] Working API with all CRUD endpoints
 - [ ] Excel data migrated to Supabase
 - [ ] Authentication working (manager login)
@@ -329,6 +346,7 @@ CREATE TABLE tenants (
 ## Future Sprints (MVP Phase 2)
 
 ### Sprint 4-5: Payment Tracking & Alerts
+
 - [ ] Add payment fields to tenant records
 - [ ] Build payment tracking UI
 - [ ] Implement voucher expiration alerts
@@ -336,6 +354,7 @@ CREATE TABLE tenants (
 - [ ] Available bed notifications
 
 ### Sprint 6: Reporting
+
 - [ ] Build occupancy report generator
 - [ ] Build tenant roster export
 - [ ] CSV export functionality
@@ -346,6 +365,7 @@ CREATE TABLE tenants (
 ## Post-MVP Backlog
 
 ### Future Enhancements (Prioritize after MVP feedback)
+
 - [ ] Epic 3.3: Rental History & Ledger (payment tracking infrastructure)
 - [ ] Epic 3.4: Online Payment Integration (Square)
 - [ ] Transaction tracking
@@ -358,6 +378,7 @@ CREATE TABLE tenants (
 - [ ] Mobile native apps
 
 ### Schema Optimization Considerations (Before Production with Real Data)
+
 - [ ] **CCO Table Normalization**: Extract Community Corrections Officer (CCO) info into separate table to avoid duplication when multiple tenants share same CCO. Currently stored in `tenant_profiles.cco_name` and `cco_phone`. Consider creating `community_corrections_officers` table with 1:many relationship to tenants.
 - [ ] **Probation/Parole Officer Table**: Similar normalization opportunity for probation/parole officers
 - [ ] **Recovery Program Table**: If recovery programs are standardized, could extract to lookup table
@@ -379,20 +400,24 @@ CREATE TABLE tenants (
 ---
 
 ## Key Assumptions
+
 - Manager has stable internet access
 - Tenants have access to smartphones for intake forms
 - DOC does not require integration with their systems (manual notification acceptable for MVP)
 
 ## Known Risks
+
 - Manager communication challenges → Mitigation: Sunday demo for early feedback
 - Data migration quality issues → Mitigation: Manual review and cleanup after ETL
 - Tenant adoption of intake form → Mitigation: Provide manager fallback to enter data
 - Scope creep → Mitigation: Strict MVP definition, parking lot for post-MVP features
 
 ## Active Issues
+
 - [ ] **Vercel Deployment Not Auto-Updating**: Commits pushed successfully (including database connection test) but Vercel production deployment has not reflected changes. Monitor after next commit push. May need to manually trigger deployment or check build logs.
 
 ## Dependencies
+
 - Supabase availability and reliability
 - Manager availability for feedback and testing
 - Real data access for migration (post-demo)
@@ -400,6 +425,7 @@ CREATE TABLE tenants (
 ---
 
 ## Tech Stack Resources
+
 - [Supabase Docs](https://supabase.com/docs)
 - [React Docs](https://react.dev)
 - [Tailwind CSS](https://tailwindcss.com)

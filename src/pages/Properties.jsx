@@ -1,0 +1,334 @@
+import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '../utils/supabase';
+
+function Properties() {
+  const [expandedHouses, setExpandedHouses] = useState(new Set());
+
+  // Fetch all houses
+  const { data: houses, isLoading: housesLoading, error: housesError } = useQuery({
+    queryKey: ['houses'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('houses')
+        .select('*')
+        .order('address', { ascending: true });
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Fetch all beds
+  const { data: beds, isLoading: bedsLoading } = useQuery({
+    queryKey: ['beds'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('beds')
+        .select('*')
+        .order('room_number', { ascending: true });
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Fetch all tenants
+  const { data: tenants, isLoading: tenantsLoading } = useQuery({
+    queryKey: ['tenants'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('tenants')
+        .select('*');
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const isLoading = housesLoading || bedsLoading || tenantsLoading;
+
+  // Toggle house expansion
+  const toggleHouse = (houseId) => {
+    setExpandedHouses(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(houseId)) {
+        newSet.delete(houseId);
+      } else {
+        newSet.add(houseId);
+      }
+      return newSet;
+    });
+  };
+
+  // Join data: group beds by house and create tenant lookup
+  const bedsByHouse = beds?.reduce((acc, bed) => {
+    if (!acc[bed.house_id]) acc[bed.house_id] = [];
+    acc[bed.house_id].push(bed);
+    return acc;
+  }, {}) || {};
+
+  const tenantMap = tenants?.reduce((acc, tenant) => {
+    acc[tenant.tenant_id] = tenant;
+    return acc;
+  }, {}) || {};
+
+  // Enrich houses with bed and occupancy data
+  const enrichedHouses = houses?.map(house => {
+    const houseBeds = bedsByHouse[house.house_id] || [];
+    const occupiedCount = houseBeds.filter(b => b.status === 'Occupied').length;
+    const occupancyRate = house.total_beds > 0
+      ? Math.round((occupiedCount / house.total_beds) * 100)
+      : 0;
+
+    // Calculate financial metrics
+    const potentialIncome = houseBeds.reduce((sum, bed) => sum + (bed.base_rent || 0), 0);
+    const actualIncome = houseBeds.reduce((sum, bed) => {
+      if (bed.status === 'Occupied' && bed.tenant_id) {
+        const tenant = tenantMap[bed.tenant_id];
+        return sum + (tenant?.actual_rent || bed.base_rent || 0);
+      }
+      return sum;
+    }, 0);
+    const incomeEfficiency = potentialIncome > 0
+      ? Math.round((actualIncome / potentialIncome) * 100)
+      : 0;
+
+    return {
+      ...house,
+      beds: houseBeds,
+      occupancy: {
+        total: house.total_beds,
+        occupied: occupiedCount,
+        rate: occupancyRate,
+      },
+      finances: {
+        potential: potentialIncome,
+        actual: actualIncome,
+        efficiency: incomeEfficiency,
+      },
+    };
+  }) || [];
+
+  // Bed status configuration
+  const getBedStyle = (status) => {
+    const styles = {
+      Available: {
+        bg: 'bg-green-100',
+        border: 'border-green-500',
+        text: 'text-green-700',
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+        ),
+      },
+      Occupied: {
+        bg: 'bg-red-100',
+        border: 'border-red-500',
+        text: 'text-red-700',
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+        ),
+      },
+      Pending: {
+        bg: 'bg-yellow-100',
+        border: 'border-yellow-500',
+        text: 'text-yellow-700',
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        ),
+      },
+      Hold: {
+        bg: 'bg-gray-100',
+        border: 'border-gray-500',
+        text: 'text-gray-700',
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+        ),
+      },
+    };
+    return styles[status] || styles.Available;
+  };
+
+  // Error state
+  if (housesError) {
+    return (
+      <div>
+        <div className="mb-6">
+          <h2 className="text-3xl font-bold text-purple-900">Properties</h2>
+          <p className="text-gray-600 mt-1">Manage your houses and beds</p>
+        </div>
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+          <p className="text-red-800 font-semibold">Error loading properties</p>
+          <p className="text-red-600 text-sm mt-1">{housesError.message}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div>
+        <div className="mb-6">
+          <h2 className="text-3xl font-bold text-purple-900">Properties</h2>
+          <p className="text-gray-600 mt-1">Manage your houses and beds</p>
+        </div>
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+          <span className="ml-3 text-gray-600">Loading properties...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Empty state
+  if (enrichedHouses.length === 0) {
+    return (
+      <div>
+        <div className="mb-6">
+          <h2 className="text-3xl font-bold text-purple-900">Properties</h2>
+          <p className="text-gray-600 mt-1">Manage your houses and beds</p>
+        </div>
+        <div className="bg-white rounded-lg shadow-md p-8 text-center">
+          <div className="inline-block bg-purple-100 rounded-full p-4 mb-4">
+            <svg className="w-12 h-12 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-gray-800 mb-2">No Properties Found</h3>
+          <p className="text-gray-600">Add your first property to get started.</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className="mb-6">
+        <h2 className="text-3xl font-bold text-purple-900">Properties</h2>
+        <p className="text-gray-600 mt-1">Manage your houses and beds</p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {enrichedHouses.map((house) => {
+          const isExpanded = expandedHouses.has(house.house_id);
+
+          return (
+            <div
+              key={house.house_id}
+              className={`bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow ${isExpanded ? 'lg:col-span-2' : ''}`}
+            >
+              {/* Property Header (clickable) */}
+              <div
+                className="p-5 cursor-pointer hover:bg-purple-50 transition-colors"
+                onClick={() => toggleHouse(house.house_id)}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-purple-900">
+                      {house.address}
+                    </h3>
+                    {house.county && (
+                      <p className="text-sm text-gray-500 mt-1">
+                        {house.county}
+                      </p>
+                    )}
+                    <div className="flex flex-col space-y-2 mt-3">
+                      <div className="flex items-center space-x-4">
+                        <span className="text-sm text-gray-700">
+                          <span className="font-semibold">{house.occupancy.occupied}/{house.occupancy.total}</span> beds occupied
+                        </span>
+                        <span className="text-sm font-semibold text-purple-600">
+                          {house.occupancy.rate}%
+                        </span>
+                      </div>
+                      <div className="text-sm text-gray-700">
+                        <span className="font-medium">Income:</span>{' '}
+                        <span className="font-semibold text-green-700">${house.finances.actual.toFixed(0)}/mo</span>
+                        <span className="text-gray-500"> | </span>
+                        <span className="text-gray-600">${house.finances.potential.toFixed(0)}/mo potential</span>
+                        <span className="ml-2 text-purple-600 font-semibold">({house.finances.efficiency}%)</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="ml-4">
+                    <div className={`transform transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
+                      <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Expandable Beds Grid */}
+              {isExpanded && (
+                <div className="border-t border-gray-200 p-5 bg-gray-50">
+                  {house.beds.length === 0 ? (
+                    <p className="text-gray-500 text-center py-4">No beds found for this property</p>
+                  ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                      {house.beds.map((bed) => {
+                        const style = getBedStyle(bed.status);
+                        const tenant = bed.tenant_id ? tenantMap[bed.tenant_id] : null;
+                        const baseRent = bed.base_rent || 0;
+                        const actualRent = tenant?.actual_rent || 0;
+                        const hasRentDiscrepancy = tenant && actualRent > 0 && actualRent !== baseRent;
+
+                        return (
+                          <div
+                            key={bed.bed_id}
+                            className={`${style.bg} ${style.text} border-2 ${style.border} rounded-lg p-3 flex flex-col items-center justify-center text-center min-h-[120px]`}
+                          >
+                            <p className="font-semibold text-sm mb-1">
+                              Room {bed.room_number}
+                            </p>
+                            <div className="my-1">
+                              {style.icon}
+                            </div>
+                            <p className="text-xs font-medium">
+                              {bed.status}
+                            </p>
+                            {tenant && (
+                              <p className="text-xs mt-1 truncate w-full" title={tenant.full_name}>
+                                {tenant.full_name}
+                              </p>
+                            )}
+                            {/* Rent badges */}
+                            <div className="mt-2 flex flex-wrap gap-1 justify-center">
+                              {hasRentDiscrepancy ? (
+                                <>
+                                  <span className="bg-blue-500 text-white px-2 py-0.5 rounded text-xs font-medium">
+                                    ${actualRent.toFixed(0)} actual
+                                  </span>
+                                  <span className="bg-gray-400 text-white px-2 py-0.5 rounded text-xs font-medium">
+                                    ${baseRent.toFixed(0)} base
+                                  </span>
+                                </>
+                              ) : baseRent > 0 ? (
+                                <span className="bg-blue-500 text-white px-2 py-0.5 rounded text-xs font-medium">
+                                  ${baseRent.toFixed(0)}
+                                </span>
+                              ) : null}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+export default Properties;
