@@ -1,11 +1,16 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'react-router-dom';
 import { supabase } from '../utils/supabase';
 
 export default function Beds() {
+  // Get URL search params
+  const [searchParams] = useSearchParams();
+  const statusParam = searchParams.get('status');
+
   // State for filters and search
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState(statusParam || 'All');
   const [sortBy, setSortBy] = useState('property');
 
   // Fetch beds data

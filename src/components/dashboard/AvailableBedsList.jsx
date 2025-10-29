@@ -106,7 +106,7 @@ function AvailableBedsList({ beds, houses, isLoading }) {
             {hasMore && (
               <div className="mt-4 pt-3 border-t border-gray-200 text-center">
                 <Link
-                  to="/properties?filter=available"
+                  to="/beds?status=Available"
                   className="text-sm text-blue-600 hover:text-blue-800 hover:underline font-medium"
                 >
                   +{enrichedBeds.length - 10} more available
