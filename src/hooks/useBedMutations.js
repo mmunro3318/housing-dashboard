@@ -128,8 +128,15 @@ export const useUpdateBed = () => {
  * Delete Bed
  *
  * Deletes a bed record and auto-decrements the house.total_beds field.
+ * Before deletion, unassigns any tenant currently assigned to this bed.
+ *
+ * Steps:
+ * 1. Find any tenant assigned to this bed
+ * 2. Set tenant.bed_id = NULL (unassign) if found
+ * 3. Delete the bed record
+ * 4. Decrement house.total_beds
+ *
  * WARNING: This is a destructive operation.
- * Should check if bed is occupied before allowing deletion.
  *
  * @returns {Object} - useMutation result with mutate, mutateAsync, isPending, isError, error
  */
@@ -138,7 +145,17 @@ export const useDeleteBed = () => {
 
   return useMutation({
     mutationFn: async ({ bedId, houseId }) => {
-      // Step 1: Delete bed record
+      // Step 1: Unassign any tenant currently in this bed
+      const { error: unassignError } = await supabase
+        .from('tenants')
+        .update({ bed_id: null })
+        .eq('bed_id', bedId);
+
+      if (unassignError) {
+        throw new Error(unassignError.message || 'Failed to unassign tenant from bed');
+      }
+
+      // Step 2: Delete bed record
       const { error: deleteError } = await supabase
         .from('beds')
         .delete()
@@ -148,7 +165,7 @@ export const useDeleteBed = () => {
         throw new Error(deleteError.message || 'Failed to delete bed');
       }
 
-      // Step 2: Auto-decrement house.total_beds
+      // Step 3: Auto-decrement house.total_beds
       const { data: house, error: fetchError } = await supabase
         .from('houses')
         .select('total_beds')
@@ -175,6 +192,7 @@ export const useDeleteBed = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['beds'] });
       queryClient.invalidateQueries({ queryKey: ['houses'] });
+      queryClient.invalidateQueries({ queryKey: ['tenants'] });
     },
     onError: (error) => {
       console.error('Error deleting bed:', error);

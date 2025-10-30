@@ -7,6 +7,12 @@
 human-notes.md
 workspace.md
 
+# Temporary documentation files
+DOCS_UPDATE_REPORT.md
+DOCUMENTATION_UPDATE_SUMMARY.md
+project-roadmap-BACKUP.md
+EPIC_ASSESSMENT.md
+
 # Python
 __pycache__/
 *.py[cod]

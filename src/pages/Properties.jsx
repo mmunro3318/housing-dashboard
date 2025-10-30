@@ -5,6 +5,9 @@ import AddPropertyModal from '../components/properties/AddPropertyModal';
 import EditPropertyModal from '../components/properties/EditPropertyModal';
 import AddBedModal from '../components/properties/AddBedModal';
 import EditBedModal from '../components/properties/EditBedModal';
+import DeleteConfirmationModal from '../components/shared/DeleteConfirmationModal';
+import { useDeleteProperty } from '../hooks/usePropertyMutations';
+import { useDeleteBed } from '../hooks/useBedMutations';
 
 function Properties() {
   const [expandedHouses, setExpandedHouses] = useState(new Set());
@@ -15,6 +18,16 @@ function Properties() {
   const [isEditBedModalOpen, setIsEditBedModalOpen] = useState(false);
   const [selectedBed, setSelectedBed] = useState(null);
   const [selectedHouseForBed, setSelectedHouseForBed] = useState(null);
+
+  // Delete modal state
+  const [isDeletePropertyModalOpen, setIsDeletePropertyModalOpen] = useState(false);
+  const [propertyToDelete, setPropertyToDelete] = useState(null);
+  const [isDeleteBedModalOpen, setIsDeleteBedModalOpen] = useState(false);
+  const [bedToDelete, setBedToDelete] = useState(null);
+
+  // Delete mutations
+  const deletePropertyMutation = useDeleteProperty();
+  const deleteBedMutation = useDeleteBed();
 
   // Fetch all houses
   const { data: houses, isLoading: housesLoading, error: housesError } = useQuery({
@@ -250,18 +263,31 @@ function Properties() {
                 className="p-5 cursor-pointer hover:bg-purple-50 transition-colors group relative"
                 onClick={() => toggleHouse(house.house_id)}
               >
-                {/* Edit Button (appears on hover) */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedProperty(house);
-                    setIsEditModalOpen(true);
-                  }}
-                  className="absolute top-4 right-12 opacity-0 group-hover:opacity-100 transition-opacity bg-white border border-purple-300 text-purple-700 px-3 py-1.5 rounded-lg hover:bg-purple-50 hover:border-purple-500 text-sm font-medium shadow-sm z-10"
-                  aria-label="Edit property"
-                >
-                  Edit
-                </button>
+                {/* Action Buttons (appear on hover) */}
+                <div className="absolute top-4 right-12 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2 z-10">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedProperty(house);
+                      setIsEditModalOpen(true);
+                    }}
+                    className="bg-white border border-purple-300 text-purple-700 px-3 py-1.5 rounded-lg hover:bg-purple-50 hover:border-purple-500 text-sm font-medium shadow-sm"
+                    aria-label="Edit property"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPropertyToDelete(house);
+                      setIsDeletePropertyModalOpen(true);
+                    }}
+                    className="bg-white border border-red-300 text-red-700 px-3 py-1.5 rounded-lg hover:bg-red-50 hover:border-red-500 text-sm font-medium shadow-sm"
+                    aria-label="Delete property"
+                  >
+                    Delete
+                  </button>
+                </div>
 
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -323,8 +349,23 @@ function Properties() {
                               setSelectedHouseForBed(house);
                               setIsEditBedModalOpen(true);
                             }}
-                            className={`${style.bg} ${style.text} border-2 ${style.border} rounded-lg p-3 flex flex-col items-center justify-center text-center min-h-[120px] cursor-pointer hover:opacity-80 transition-opacity`}
+                            className={`${style.bg} ${style.text} border-2 ${style.border} rounded-lg p-3 flex flex-col items-center justify-center text-center min-h-[120px] cursor-pointer hover:opacity-80 transition-opacity relative group/bed`}
                           >
+                            {/* Delete Icon (top-right corner, appears on hover) */}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setBedToDelete({ bed, house });
+                                setIsDeleteBedModalOpen(true);
+                              }}
+                              className="absolute top-1 right-1 opacity-0 group-hover/bed:opacity-100 transition-opacity bg-white rounded-full p-1 hover:bg-red-50 shadow-sm"
+                              aria-label="Delete bed"
+                            >
+                              <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+
                             <p className="font-semibold text-sm mb-1">
                               {bed.room_number}
                             </p>
@@ -415,6 +456,63 @@ function Properties() {
         houseAddress={selectedHouseForBed?.address}
         existingBeds={selectedHouseForBed?.beds || []}
         tenantMap={tenantMap}
+      />
+
+      {/* Delete Property Confirmation */}
+      <DeleteConfirmationModal
+        isOpen={isDeletePropertyModalOpen}
+        onClose={() => {
+          setIsDeletePropertyModalOpen(false);
+          setPropertyToDelete(null);
+        }}
+        onConfirm={async () => {
+          await deletePropertyMutation.mutateAsync(propertyToDelete.house_id);
+          setIsDeletePropertyModalOpen(false);
+          setPropertyToDelete(null);
+        }}
+        title="Delete Property?"
+        itemName={propertyToDelete?.address}
+        warningMessage="This action cannot be undone. All beds will be permanently deleted."
+        dangerDetails={[
+          `${propertyToDelete?.beds?.length || 0} bed(s) will be deleted`,
+          `${propertyToDelete?.beds?.filter(b => b.tenant_id).length || 0} tenant(s) will become unassigned`,
+          'Any tenants in these beds will need to be reassigned manually',
+        ]}
+        isLoading={deletePropertyMutation.isPending}
+      />
+
+      {/* Delete Bed Confirmation */}
+      <DeleteConfirmationModal
+        isOpen={isDeleteBedModalOpen}
+        onClose={() => {
+          setIsDeleteBedModalOpen(false);
+          setBedToDelete(null);
+        }}
+        onConfirm={async () => {
+          await deleteBedMutation.mutateAsync({
+            bedId: bedToDelete.bed.bed_id,
+            houseId: bedToDelete.house.house_id,
+          });
+          setIsDeleteBedModalOpen(false);
+          setBedToDelete(null);
+        }}
+        title="Delete Bed?"
+        itemName={`${bedToDelete?.house?.address} - ${bedToDelete?.bed?.room_number}`}
+        warningMessage={
+          bedToDelete?.bed?.tenant_id
+            ? 'This bed is currently occupied. The tenant will become unassigned and need a new bed.'
+            : 'This action cannot be undone.'
+        }
+        dangerDetails={
+          bedToDelete?.bed?.tenant_id
+            ? [
+                `Status: ${bedToDelete?.bed?.status}`,
+                `Tenant: ${tenantMap[bedToDelete?.bed?.tenant_id]?.full_name || 'Unknown'}`,
+                'Tenant will be unassigned after deletion',
+              ]
+            : [`Status: ${bedToDelete?.bed?.status}`]
+        }
+        isLoading={deleteBedMutation.isPending}
       />
     </div>
   );

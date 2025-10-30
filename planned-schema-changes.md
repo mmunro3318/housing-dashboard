@@ -90,9 +90,75 @@ CHECK (application_status IN ('Waitlist', 'Approved', 'Pending', 'Housed', 'Exit
 
 ---
 
+### 4. Address Field Breakup (Structured Address)
+
+**Context:** Current `address` field stores full address as a single string (e.g., "123 Main St, Seattle WA 98101"). Breaking into structured fields enables better filtering, validation, and reporting.
+
+**Changes needed:**
+```sql
+-- Replace single address field with structured fields
+ALTER TABLE houses
+DROP COLUMN address,
+ADD COLUMN address_line1 VARCHAR(255) NOT NULL,
+ADD COLUMN address_line2 VARCHAR(100),
+ADD COLUMN city VARCHAR(100) NOT NULL,
+ADD COLUMN state VARCHAR(2) NOT NULL DEFAULT 'WA',
+ADD COLUMN zip VARCHAR(10) NOT NULL;
+
+-- Optional: Add composite index for faster searching
+CREATE INDEX idx_houses_location ON houses(city, state, zip);
+```
+
+**Benefits:**
+- ✅ Better filtering/grouping by city or state
+- ✅ Standardized data entry and validation
+- ✅ Support for future features (geographic reports, maps)
+- ✅ Easier address parsing and formatting
+- ✅ State-level compliance reporting (if needed)
+
+**Trade-offs:**
+- ❌ Requires database migration and data transformation
+- ❌ More complex forms (though could keep single-line entry with auto-parse)
+- ❌ Need to parse existing addresses (regex or address parsing library)
+
+**Migration strategy:**
+1. Add new columns (nullable initially)
+2. Parse existing addresses using regex or address library
+3. Manually review/fix parsing errors
+4. Make new columns NOT NULL
+5. Drop old address column
+6. Update all forms and display components
+
+**Parser example:**
+```javascript
+// Simple regex parser (may need refinement)
+const parseAddress = (fullAddress) => {
+  const regex = /^(.+),\s*(.+?)\s+([A-Z]{2})\s+(\d{5}(-\d{4})?)$/;
+  const match = fullAddress.match(regex);
+  if (match) {
+    return {
+      address_line1: match[1].trim(),
+      city: match[2].trim(),
+      state: match[3],
+      zip: match[4]
+    };
+  }
+  return null; // Manual review needed
+};
+```
+
+**UI Considerations:**
+- Option A: Multiple separate input fields (more explicit)
+- Option B: Single input with auto-complete (Google Places API?)
+- Option C: Single input that parses on blur (user-friendly but error-prone)
+
+**Recommendation:** Implement as Phase 2 enhancement. Current single-field approach works for MVP, but structured fields provide significant value for reporting and data quality.
+
+---
+
 ## Priority: Low (Tech Debt)
 
-### 4. County Name Normalization
+### 5. County Name Normalization
 
 **Context:** County field stores full name "King County" but should just store "King" for consistency and easier filtering.
 
@@ -118,7 +184,7 @@ ALTER TABLE houses ADD CONSTRAINT check_county_format CHECK (county NOT LIKE '% 
 
 ---
 
-### 5. Bed Assignment Status Tracking
+### 6. Bed Assignment Status Tracking
 
 **Context:** When a bed is assigned but tenant hasn't moved in yet, we need intermediate status.
 

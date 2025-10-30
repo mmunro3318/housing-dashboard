@@ -126,9 +126,17 @@ export const useUpdateProperty = () => {
 };
 
 /**
- * Delete Property
+ * Delete Property (Cascade)
  *
- * Deletes a house record. Beds will be cascade deleted by database constraints.
+ * Deletes a house record and all associated beds (via database CASCADE).
+ * Before deletion, unassigns any tenants currently assigned to beds in this property.
+ *
+ * Steps:
+ * 1. Find all beds for this property
+ * 2. Find all tenants assigned to those beds
+ * 3. Set tenant.bed_id = NULL for affected tenants (unassign)
+ * 4. Delete the property (beds cascade delete automatically)
+ *
  * WARNING: This is a destructive operation.
  *
  * @returns {Object} - useMutation result with mutate, mutateAsync, isPending, isError, error
@@ -138,20 +146,49 @@ export const useDeleteProperty = () => {
 
   return useMutation({
     mutationFn: async (houseId) => {
-      const { error } = await supabase
+      // Step 1: Find all beds for this property
+      const { data: beds, error: bedsError } = await supabase
+        .from('beds')
+        .select('bed_id')
+        .eq('house_id', houseId);
+
+      if (bedsError) {
+        throw new Error(bedsError.message || 'Failed to fetch beds for property');
+      }
+
+      const bedIds = beds.map((bed) => bed.bed_id);
+
+      // Step 2: Unassign any tenants currently in these beds
+      if (bedIds.length > 0) {
+        const { error: unassignError } = await supabase
+          .from('tenants')
+          .update({ bed_id: null })
+          .in('bed_id', bedIds);
+
+        if (unassignError) {
+          throw new Error(unassignError.message || 'Failed to unassign tenants');
+        }
+      }
+
+      // Step 3: Delete the property (beds will cascade delete)
+      const { error: deleteError } = await supabase
         .from('houses')
         .delete()
         .eq('house_id', houseId);
 
-      if (error) {
-        throw new Error(error.message || 'Failed to delete property');
+      if (deleteError) {
+        throw new Error(deleteError.message || 'Failed to delete property');
       }
 
-      return { houseId };
+      return {
+        houseId,
+        bedsDeleted: bedIds.length,
+      };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['houses'] });
       queryClient.invalidateQueries({ queryKey: ['beds'] });
+      queryClient.invalidateQueries({ queryKey: ['tenants'] });
     },
     onError: (error) => {
       console.error('Error deleting property:', error);

@@ -4,7 +4,23 @@ This document tracks dashboard widgets and features identified for future implem
 
 ---
 
-## Immediate Next Steps (Post-Context Collapse)
+## ✅ Implemented (Phase 1)
+
+### Properties Overview Widget
+**Status:** Implemented in `src/components/dashboard/PropertiesOverviewWidget.jsx`
+**Note:** Could be simplified per suggestion below, but functional as-is
+
+### Available Beds Widget
+**Status:** Implemented in `src/components/dashboard/AvailableBedsList.jsx`
+**Enhancement planned:** Add clickable link to Properties page (see below)
+
+### Voucher Expiration Widget
+**Status:** Implemented
+**Shows:** Tenants with vouchers expiring in next 30/60 days
+
+---
+
+## Immediate Next Steps (Current Phase)
 
 ### 1. Simplify Properties Overview Widget
 
@@ -87,9 +103,47 @@ Revenue Gap: -$10,268/mo (72% efficiency)
 
 ---
 
+### 4. Unassigned Tenants Widget
+
+**Purpose:** Show tenants who are in the system but not currently assigned to any bed (bed_id IS NULL)
+
+**Context:** Tenants can become unassigned when:
+- A bed is deleted while occupied (tenant's bed_id set to NULL)
+- Manager manually unassigns a tenant before moving them
+- Tenant is in waitlist/approval stage (no bed assigned yet)
+
+**Data requirements:**
+- Filter: `tenant.bed_id IS NULL`
+- Filter: `tenant.exit_date IS NULL` (exclude former tenants)
+- Sort: By entry_date or application date
+
+**Display:**
+- Tenant name
+- Application status badge
+- Payment type (Private/Voucher)
+- "Assign Bed" action button
+
+**Interaction:**
+- Click "Assign Bed" → Opens AssignTenantModal
+- Modal shows available beds with search/filter by address
+- Manager selects bed, confirms assignment
+- Updates: `tenant.bed_id` and `bed.status = 'Occupied'` (or 'Pending')
+
+**Color scheme:** Yellow/orange theme (action required)
+
+**Empty state:** "All tenants are currently assigned to beds"
+
+**Files to create:**
+- `src/components/dashboard/UnassignedTenantsWidget.jsx`
+- `src/components/AssignTenantModal.jsx`
+
+**Priority:** High (prevents data loss when deleting beds)
+
+---
+
 ## Depends on: Forms Implementation (Phase 4)
 
-### 4. Pending Form Submissions Widget
+### 5. Pending Form Submissions Widget
 
 **Purpose:** Show manager how many unreviewed form submissions require action
 
@@ -124,7 +178,7 @@ ADD COLUMN reviewed_by VARCHAR(255);
 
 ## Depends on: Waitlist Management Feature
 
-### 5. Waitlist Assignment Widget/Flow
+### 6. Waitlist Assignment Widget/Flow
 
 **Purpose:** Quick view of waitlist applicants with ability to assign to available beds
 
@@ -167,7 +221,7 @@ ADD COLUMN reviewed_by VARCHAR(255);
 
 ## Future Enhancements
 
-### 6. Rent Collection Status Widget
+### 7. Rent Collection Status Widget
 
 **Purpose:** Show payment status for current month
 
@@ -188,7 +242,7 @@ ADD COLUMN reviewed_by VARCHAR(255);
 
 ---
 
-### 7. Maintenance/Issues Tracker Widget
+### 8. Maintenance/Issues Tracker Widget
 
 **Purpose:** Track maintenance requests and property issues
 
@@ -205,7 +259,7 @@ ADD COLUMN reviewed_by VARCHAR(255);
 
 ---
 
-### 8. Occupancy Trends Chart
+### 9. Occupancy Trends Chart
 
 **Purpose:** Visual graph showing occupancy rate over time (3 months, 6 months, 1 year)
 
@@ -225,7 +279,7 @@ ADD COLUMN reviewed_by VARCHAR(255);
 
 ---
 
-### 9. Voucher Budget Tracker
+### 10. Voucher Budget Tracker
 
 **Purpose:** Track total voucher payments vs budget/cap
 
@@ -250,6 +304,7 @@ ADD COLUMN reviewed_by VARCHAR(255);
 | Simplify Properties Overview | High | Low | None | Current |
 | Pending Arrivals | High | Low | None | Current |
 | Enhanced Available Beds Link | High | Low | None | Current |
+| **Unassigned Tenants** | **High** | **Medium** | **None** | **Current** |
 | County Restrictions | High | Medium | Schema change | 1.5 |
 | Pending Form Submissions | Medium | Low | Forms + Schema | 4 |
 | Waitlist Assignment | Medium | High | Schema + UI work | 2 |

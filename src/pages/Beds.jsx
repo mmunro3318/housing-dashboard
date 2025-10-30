@@ -2,6 +2,8 @@ import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { supabase } from '../utils/supabase';
+import DeleteConfirmationModal from '../components/shared/DeleteConfirmationModal';
+import { useDeleteBed } from '../hooks/useBedMutations';
 
 export default function Beds() {
   // Get URL search params
@@ -12,6 +14,13 @@ export default function Beds() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState(statusParam || 'All');
   const [sortBy, setSortBy] = useState('property');
+
+  // Delete modal state
+  const [isDeleteBedModalOpen, setIsDeleteBedModalOpen] = useState(false);
+  const [bedToDelete, setBedToDelete] = useState(null);
+
+  // Delete mutation
+  const deleteBedMutation = useDeleteBed();
 
   // Fetch beds data
   const { data: beds, isLoading: bedsLoading, error: bedsError } = useQuery({
@@ -328,8 +337,22 @@ export default function Beds() {
             return (
               <div
                 key={bed.bed_id}
-                className={`${style.bg} border-2 ${style.border} rounded-lg p-4 transition-all hover:shadow-md`}
+                className={`${style.bg} border-2 ${style.border} rounded-lg p-4 transition-all hover:shadow-md relative group`}
               >
+                {/* Delete Button (top-right corner, appears on hover) */}
+                <button
+                  onClick={() => {
+                    setBedToDelete(bed);
+                    setIsDeleteBedModalOpen(true);
+                  }}
+                  className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white rounded-full p-1.5 hover:bg-red-50 shadow-sm"
+                  aria-label="Delete bed"
+                >
+                  <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+
                 {/* Property Address */}
                 <div className="mb-3">
                   <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Property</p>
@@ -395,6 +418,40 @@ export default function Beds() {
           })}
         </div>
       )}
+
+      {/* Delete Bed Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={isDeleteBedModalOpen}
+        onClose={() => {
+          setIsDeleteBedModalOpen(false);
+          setBedToDelete(null);
+        }}
+        onConfirm={async () => {
+          await deleteBedMutation.mutateAsync({
+            bedId: bedToDelete.bed_id,
+            houseId: bedToDelete.house_id,
+          });
+          setIsDeleteBedModalOpen(false);
+          setBedToDelete(null);
+        }}
+        title="Delete Bed?"
+        itemName={`${bedToDelete?.propertyAddress} - ${bedToDelete?.room_number}`}
+        warningMessage={
+          bedToDelete?.tenant_id
+            ? 'This bed is currently occupied. The tenant will become unassigned and need a new bed.'
+            : 'This action cannot be undone.'
+        }
+        dangerDetails={
+          bedToDelete?.tenant_id
+            ? [
+                `Status: ${bedToDelete?.status}`,
+                `Tenant: ${bedToDelete?.occupantName || 'Unknown'}`,
+                'Tenant will be unassigned after deletion',
+              ]
+            : [`Status: ${bedToDelete?.status}`]
+        }
+        isLoading={deleteBedMutation.isPending}
+      />
     </div>
   );
 }

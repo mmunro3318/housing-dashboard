@@ -3,7 +3,8 @@
     "allow": [
       "WebSearch",
       "Bash(cat .gitignore)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []
