@@ -1,16 +1,27 @@
 -- ============================================================================
--- Housing Dashboard - Row Level Security (RLS) Policies
+-- Housing Dashboard - Row Level Security (RLS) Policies (BASE/PRODUCTION)
 -- ============================================================================
 -- Created: October 27, 2025
--- Purpose: Secure all tables with Row Level Security policies
+-- Updated: October 30, 2025 (Clarified dev vs production workflow)
+-- Purpose: Production-ready RLS policies for all tables
 --
 -- Security Model:
---   1. Public (unauthenticated) - Can submit intake forms only
+--   1. Public (unauthenticated/anon) - Can submit intake forms only
 --   2. Tenant (authenticated) - Read-only access to own data
 --   3. Manager (authenticated + admin role) - Full CRUD access
 --
--- Note: For DEVELOPMENT, we're using permissive policies.
---       For PRODUCTION, uncomment the restrictive policies at the bottom.
+-- IMPORTANT: Development vs Production Workflow
+--   PRODUCTION (this file):
+--     - Authenticated users have full CRUD access to houses/beds/tenants
+--     - Anon users can ONLY access intake forms (form_submissions, policy_agreements)
+--     - Anon users CANNOT access houses/beds/tenants
+--
+--   DEVELOPMENT (use supabase-rls-dev-access.sql):
+--     - Run supabase-rls-dev-access.sql to grant temporary anon CRUD access
+--     - This creates DEV_ONLY policies that allow anon users to test CRUD operations
+--     - Before production, run supabase-rls-production-access.sql to remove them
+--
+-- See docs/schemas/README.md for complete workflow documentation
 -- ============================================================================
 
 -- ============================================================================
