@@ -1,9 +1,20 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../utils/supabase';
+import AddPropertyModal from '../components/properties/AddPropertyModal';
+import EditPropertyModal from '../components/properties/EditPropertyModal';
+import AddBedModal from '../components/properties/AddBedModal';
+import EditBedModal from '../components/properties/EditBedModal';
 
 function Properties() {
   const [expandedHouses, setExpandedHouses] = useState(new Set());
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedProperty, setSelectedProperty] = useState(null);
+  const [isAddBedModalOpen, setIsAddBedModalOpen] = useState(false);
+  const [isEditBedModalOpen, setIsEditBedModalOpen] = useState(false);
+  const [selectedBed, setSelectedBed] = useState(null);
+  const [selectedHouseForBed, setSelectedHouseForBed] = useState(null);
 
   // Fetch all houses
   const { data: houses, isLoading: housesLoading, error: housesError } = useQuery({
@@ -209,9 +220,20 @@ function Properties() {
 
   return (
     <div>
-      <div className="mb-6">
-        <h2 className="text-3xl font-bold text-purple-900">Properties</h2>
-        <p className="text-gray-600 mt-1">Manage your houses and beds</p>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h2 className="text-3xl font-bold text-purple-900">Properties</h2>
+          <p className="text-gray-600 mt-1">Manage your houses and beds</p>
+        </div>
+        <button
+          onClick={() => setIsAddModalOpen(true)}
+          className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2 shadow-md hover:shadow-lg"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          Add Property
+        </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -225,9 +247,22 @@ function Properties() {
             >
               {/* Property Header (clickable) */}
               <div
-                className="p-5 cursor-pointer hover:bg-purple-50 transition-colors"
+                className="p-5 cursor-pointer hover:bg-purple-50 transition-colors group relative"
                 onClick={() => toggleHouse(house.house_id)}
               >
+                {/* Edit Button (appears on hover) */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedProperty(house);
+                    setIsEditModalOpen(true);
+                  }}
+                  className="absolute top-4 right-12 opacity-0 group-hover:opacity-100 transition-opacity bg-white border border-purple-300 text-purple-700 px-3 py-1.5 rounded-lg hover:bg-purple-50 hover:border-purple-500 text-sm font-medium shadow-sm z-10"
+                  aria-label="Edit property"
+                >
+                  Edit
+                </button>
+
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <h3 className="text-lg font-bold text-purple-900">
@@ -283,10 +318,15 @@ function Properties() {
                         return (
                           <div
                             key={bed.bed_id}
-                            className={`${style.bg} ${style.text} border-2 ${style.border} rounded-lg p-3 flex flex-col items-center justify-center text-center min-h-[120px]`}
+                            onClick={() => {
+                              setSelectedBed(bed);
+                              setSelectedHouseForBed(house);
+                              setIsEditBedModalOpen(true);
+                            }}
+                            className={`${style.bg} ${style.text} border-2 ${style.border} rounded-lg p-3 flex flex-col items-center justify-center text-center min-h-[120px] cursor-pointer hover:opacity-80 transition-opacity`}
                           >
                             <p className="font-semibold text-sm mb-1">
-                              Room {bed.room_number}
+                              {bed.room_number}
                             </p>
                             <div className="my-1">
                               {style.icon}
@@ -321,12 +361,61 @@ function Properties() {
                       })}
                     </div>
                   )}
+
+                  {/* Add Bed Button */}
+                  <div className="mt-4 pt-3 border-t border-gray-300">
+                    <button
+                      onClick={() => {
+                        setSelectedHouseForBed(house);
+                        setIsAddBedModalOpen(true);
+                      }}
+                      className="w-full px-4 py-2 bg-white border-2 border-purple-300 border-dashed text-purple-700 rounded-lg hover:bg-purple-50 hover:border-purple-500 transition-colors flex items-center justify-center gap-2 font-medium"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                      Add Bed to Property
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
           );
         })}
       </div>
+
+      {/* Modals */}
+      <AddPropertyModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
+      <EditPropertyModal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setSelectedProperty(null);
+        }}
+        property={selectedProperty}
+      />
+      <AddBedModal
+        isOpen={isAddBedModalOpen}
+        onClose={() => {
+          setIsAddBedModalOpen(false);
+          setSelectedHouseForBed(null);
+        }}
+        houseId={selectedHouseForBed?.house_id}
+        houseAddress={selectedHouseForBed?.address}
+        existingBeds={selectedHouseForBed?.beds || []}
+      />
+      <EditBedModal
+        isOpen={isEditBedModalOpen}
+        onClose={() => {
+          setIsEditBedModalOpen(false);
+          setSelectedBed(null);
+          setSelectedHouseForBed(null);
+        }}
+        bed={selectedBed}
+        houseAddress={selectedHouseForBed?.address}
+        existingBeds={selectedHouseForBed?.beds || []}
+        tenantMap={tenantMap}
+      />
     </div>
   );
 }
