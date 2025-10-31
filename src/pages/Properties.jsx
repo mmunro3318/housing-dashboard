@@ -19,6 +19,9 @@ function Properties() {
   const [selectedBed, setSelectedBed] = useState(null);
   const [selectedHouseForBed, setSelectedHouseForBed] = useState(null);
 
+  // Filter state
+  const [selectedCounty, setSelectedCounty] = useState('all');
+
   // Delete modal state
   const [isDeletePropertyModalOpen, setIsDeletePropertyModalOpen] = useState(false);
   const [propertyToDelete, setPropertyToDelete] = useState(null);
@@ -131,6 +134,18 @@ function Properties() {
     };
   }) || [];
 
+  // Extract unique counties for filter dropdown
+  const counties = ['all', ...new Set(houses?.map(h => h.county).filter(Boolean) || [])].sort((a, b) => {
+    if (a === 'all') return -1;
+    if (b === 'all') return 1;
+    return a.localeCompare(b);
+  });
+
+  // Filter houses by selected county
+  const filteredHouses = selectedCounty === 'all'
+    ? enrichedHouses
+    : enrichedHouses.filter(house => house.county === selectedCounty);
+
   // Bed status configuration
   const getBedStyle = (status) => {
     const styles = {
@@ -211,7 +226,7 @@ function Properties() {
   }
 
   // Empty state
-  if (enrichedHouses.length === 0) {
+  if (houses?.length === 0) {
     return (
       <div>
         <div className="mb-6">
@@ -233,24 +248,74 @@ function Properties() {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold text-purple-900">Properties</h2>
-          <p className="text-gray-600 mt-1">Manage your houses and beds</p>
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h2 className="text-3xl font-bold text-purple-900">Properties</h2>
+            <p className="text-gray-600 mt-1">Manage your houses and beds</p>
+          </div>
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2 shadow-md hover:shadow-lg"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Add Property
+          </button>
         </div>
-        <button
-          onClick={() => setIsAddModalOpen(true)}
-          className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2 shadow-md hover:shadow-lg"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          Add Property
-        </button>
+
+        {/* County Filter */}
+        {counties.length > 1 && (
+          <div className="flex items-center gap-3">
+            <label htmlFor="county-filter" className="text-sm font-medium text-gray-700">
+              Filter by County:
+            </label>
+            <select
+              id="county-filter"
+              value={selectedCounty}
+              onChange={(e) => setSelectedCounty(e.target.value)}
+              className="px-3 py-1.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm"
+            >
+              <option value="all">All Counties ({enrichedHouses.length})</option>
+              {counties.filter(c => c !== 'all').map(county => {
+                const count = enrichedHouses.filter(h => h.county === county).length;
+                return (
+                  <option key={county} value={county}>
+                    {county} ({count})
+                  </option>
+                );
+              })}
+            </select>
+            {selectedCounty !== 'all' && (
+              <span className="text-sm text-gray-600">
+                Showing {filteredHouses.length} of {enrichedHouses.length} properties
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {enrichedHouses.map((house) => {
+      {/* No results state for filtered view */}
+      {filteredHouses.length === 0 && selectedCounty !== 'all' ? (
+        <div className="bg-white rounded-lg shadow-md p-8 text-center">
+          <div className="inline-block bg-gray-100 rounded-full p-4 mb-4">
+            <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-gray-800 mb-2">No Properties in {selectedCounty}</h3>
+          <p className="text-gray-600">Try selecting a different county or clear the filter.</p>
+          <button
+            onClick={() => setSelectedCounty('all')}
+            className="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+          >
+            Show All Properties
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {filteredHouses.map((house) => {
           const isExpanded = expandedHouses.has(house.house_id);
 
           return (
@@ -424,6 +489,7 @@ function Properties() {
           );
         })}
       </div>
+      )}
 
       {/* Modals */}
       <AddPropertyModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />

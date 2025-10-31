@@ -1897,3 +1897,92 @@ Or should we continue with the next tasks (county filtering, voucher rates)?
 ## User
 
 Let's stage all changes `git add .`, commit and push. I'll collapse context, and we'll move on to county filter and then voucher rates.
+
+## Claude
+
+● ✅ Committed and pushed successfully!
+
+Commit: feat: Complete CRUD operations with delete functionality and tenant hooks
+
+Files committed:
+
+- ✅ src/hooks/useTenantMutations.js - 5 mutation hooks for tenant CRUD
+- ✅ src/components/shared/DeleteConfirmationModal.jsx - Reusable delete confirmation
+- ✅ Delete operations in Properties and Beds pages
+- ✅ Updated planning documents (planned-widgets.md, planned-schema-changes.md)
+- ✅ .gitignore updates
+- ✅ Session notes
+
+Pushed to:
+
+- ✅ GitLab (origin)
+- ✅ GitHub (github)
+
+---
+
+Ready for next phase: County filtering → Voucher rates → Forms setup
+
+Collapse context when ready, and we'll tackle county filtering first! 🚀
+
+## User
+
+Okay! Context collapsed. Go ahead and add in the county filtering to the Properties Page.
+
+## Claude
+
+● County Filtering Successfully Implemented!
+
+I've added county filtering to the Properties page. Here's what was implemented:
+
+Features Added:
+
+1. County Filter Dropdown (line 268-296 in Properties.jsx):
+
+   - Located below the page header
+   - Shows "All Counties" option with total count
+   - Lists each unique county with property count (e.g., "King (5)")
+   - Automatically sorts counties alphabetically
+
+2. Dynamic Filtering:
+
+   - Filter state tracked with selectedCounty state variable
+   - Filters the enriched properties based on selected county
+   - Shows filtered count when a specific county is selected
+
+3. Empty State Handling:
+
+   - Shows helpful "No Properties in {County}" message when filter returns no results
+   - Includes "Show All Properties" button to quickly clear filter
+   - Original empty state for when no properties exist at all
+
+4. Smart UI Behavior:
+
+   - Filter only appears when there are multiple counties
+   - Shows "Showing X of Y properties" when filtered
+   - Maintains all existing functionality (expand, edit, delete)
+
+Code Changes:
+
+- Lines 23: Added selectedCounty state
+- Lines 137-147: Extract unique counties and filter logic
+- Lines 229: Updated empty state check to use houses length
+- Lines 251-297: New header layout with county filter UI
+- Lines 299-315: Filtered empty state with clear button
+- Lines 317-491: Updated to use filteredHouses instead of enrichedHouses
+
+The app compiled successfully with no errors. The filter is ready to use!
+
+Next up: Voucher rate management in Settings page. Should I proceed with that now?
+
+Todos
+☒ Add county filter state and UI to Properties page
+☒ Test county filtering with multiple properties
+☐ Build voucher rate management in Settings page
+
+## User
+
+Perfect! County filtering works flawlessly!
+
+Let's now implement the settings icon with the ability to set the voucher rates. And add 2 filler tabs for later.
+
+## Claude
